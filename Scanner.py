@@ -26,12 +26,19 @@ class Scanner:
 
     def pingOnlyScan(self):
         #nmap -sn subnet
-        pass
+
+        for subnet in self.subnets:
+            self.executeCommand([' -sn ', str(subnet)])
+            # print(str(subnet))
+
 
     def hostComboScan(self):
 
         # nmap -sn (no port) -PS22-25,80,3389 (SYN on common ports) -PA22-25,80,3389 (ACK on common ports) subnet
-        self.evasionTecs()
+        flags = self.evasionTecs()
+
+        for subnet in self.subnets:
+            self.executeCommand(flags + " " + str(subnet))
 
         pass
 
@@ -77,10 +84,14 @@ class Scanner:
         :param flags: ex. ' -B -f -P22'
         :return: returns scan results in XML format
         """
-        p = subprocess.Popen(['nmap', flags], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        flags.insert(0, "nmap")
+
+        p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         menus.processAnimation(p)
 
         stdout, stderr = p.communicate()
+        print("Error: %s", stderr)
+        print("Output: %s", stdout)
 
         return stdout

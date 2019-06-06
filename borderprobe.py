@@ -42,12 +42,12 @@ if __name__ == '__main__':
     if choice == 1:
 
         subnet = readSubnet()
-        scan  = Scanner(subnet)
+        scan = Scanner(divideSubnet(subnet))
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
         if choice == 1:
-            pass
+            scan.pingOnlyScan()
 
         elif choice == 2:
             scan.hostComboScan()
