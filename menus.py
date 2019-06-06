@@ -42,7 +42,7 @@ def hostDiscovEvasionTech():
         Please chose one or more methods (1,2,3,...)
         
         1. No evasion
-        2. Fragmentation
+        2. Fragmentation (Root Required)
         3. Decoy Scan 
         4. Timing 1-4
         

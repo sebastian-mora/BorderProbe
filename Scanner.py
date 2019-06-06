@@ -10,7 +10,7 @@ class Scanner:
         self.subnets = subnet_list
         self.evasionOptions = {
             1: '',
-            2: '-f',
+            2: ' -f ',
             3: self.getDecoys
         }
 
@@ -38,13 +38,17 @@ class Scanner:
         flags = self.evasionTecs()
 
         for subnet in self.subnets:
-            self.executeCommand(flags + " " + str(subnet))
-
+            temp = list(flags)
+            temp.append(str(subnet))
+            print(temp)
+            self.executeCommand(temp)
         pass
 
     def getDecoys(self):
         decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
-        return str("-D " + decoys)
+        decoy_list = ["-D "]
+        decoy_list.extend(decoys.split(","))
+        return decoy_list
 
 
 
@@ -54,7 +58,7 @@ class Scanner:
         Parses the user input into a Nmap flags
         :return: string
         """
-        tech_string = ''
+        flag_list = []
 
         menus.hostDiscovEvasionTech()
         choice = input()
@@ -66,16 +70,16 @@ class Scanner:
 
                 if callable(self.evasionOptions[item]):
 
-                    tech_string += self.evasionOptions[item]() + " "
+                    flag_list.extend(self.evasionOptions[item]())
 
                 else:
-                    tech_string += self.evasionOptions[item] + " "
+                    flag_list.append(self.evasionOptions[item] + " ")
             else:
                 print("invaild choice: %s", item)
 
-        print(tech_string)
+        print(flag_list)
 
-        return tech_string
+        return flag_list
 
     def executeCommand(self, flags):
 
@@ -85,6 +89,8 @@ class Scanner:
         :return: returns scan results in XML format
         """
         flags.insert(0, "nmap")
+
+        print(flags)
 
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
