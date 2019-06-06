@@ -1,10 +1,18 @@
 import random
+import subprocess
+
 import menus
+
 
 class Scanner:
 
     def __init__(self,subnet_list):
         self.subnets = subnet_list
+        self.evasionOptions = {
+            1: '',
+            2: '-f',
+            3: self.getDecoys
+        }
 
 
     def radomizeSubnetOrder(self,subnets):
@@ -27,30 +35,52 @@ class Scanner:
 
         pass
 
+    def getDecoys(self):
+        decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
+        return str("-D " + decoys)
+
+
+
 
     def evasionTecs(self):
+        """
+        Parses the user input into a Nmap flags
+        :return: string
+        """
         tech_string = ''
-        options={
-            1: '',
-            2: '-f',
-            3: '-D'
-        }
+
         menus.hostDiscovEvasionTech()
-        choice = str(input())
+        choice = input()
         choice = list(map(int,choice.split(',')))
 
-        for num in choice:
+        for item in choice:
 
-            if num in options:
+            if item in self.evasionOptions:
 
-                if options[num] is '-D':
-                    decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
-                    tech_string+= options[num] + " " + decoys
+                if callable(self.evasionOptions[item]):
+
+                    tech_string += self.evasionOptions[item]() + " "
+
                 else:
-                    tech_string+= options[num] + " "
+                    tech_string += self.evasionOptions[item] + " "
             else:
-                print("invaild choice: %s", num)
+                print("invaild choice: %s", item)
 
         print(tech_string)
 
         return tech_string
+
+    def executeCommand(self, flags):
+
+        """
+        Execute an Nmap command and return the values
+        :param flags: ex. ' -B -f -P22'
+        :return: returns scan results in XML format
+        """
+        p = subprocess.Popen(['nmap', flags], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        menus.processAnimation(p)
+
+        stdout, stderr = p.communicate()
+
+        return stdout

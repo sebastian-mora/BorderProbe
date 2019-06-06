@@ -1,3 +1,7 @@
+import time
+import time
+
+
 def headerAsciiArt():
     print("""
       /$$$$$$$                            /$$                           /$$$$$$$                     /$$                
@@ -40,8 +44,21 @@ def hostDiscovEvasionTech():
         1. No evasion
         2. Fragmentation
         3. Decoy Scan 
+        4. Timing 1-4
         
     """)
+
+
+def processAnimation(process):
+    i = 0
+    animation_string = "|/-\\"
+    while process.poll() is None:
+        time.sleep(0.1)
+        sys.stdout.write("\r" + animation_string[i % len(animation_string)])
+        sys.stdout.flush()
+        i += 1
+
+
 
 def readInt():
     return int(input("Please Enter a number "))

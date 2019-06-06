@@ -1,4 +1,5 @@
 import ipaddress
+
 import menus as menu
 from Scanner import Scanner
 
@@ -45,12 +46,11 @@ if __name__ == '__main__':
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
-        if choice == 2:
+        if choice == 1:
+            pass
+
+        elif choice == 2:
             scan.hostComboScan()
 
-
-
-
-
-
-
+        else:
+            print("Invalid INput")
