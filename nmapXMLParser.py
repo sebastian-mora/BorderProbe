@@ -41,7 +41,7 @@ class nmapXMLParser:
         if self.main_doc is None:
             self.main_doc = data
 
-    else:
-    hosts = data['nmaprun']["host"]
-    for host in hosts:
-        self.main_doc['nmaprun']['host'].append(host)
+        else:
+            hosts = data['nmaprun']["host"]
+            for host in hosts:
+                self.main_doc['nmaprun']['host'].append(host)
