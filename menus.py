@@ -45,9 +45,21 @@ def hostDiscovEvasionTech():
         2. Fragmentation (Root Required)
         3. Decoy Scan 
         4. Timing 1-4
+        5. Randomize Hosts
         
     """)
 
+
+def timingOptions():
+    print("""
+        
+        0: Paranoid
+        1: Sneaky
+        2: Polite
+        3: Normal
+        4: Aggressive
+        5: Insane
+    """)
 
 def processAnimation(process):
     i = 0
@@ -61,4 +73,4 @@ def processAnimation(process):
 
 
 def readInt():
-    return int(input("Please Enter a number "))
+    return int(input("Please Enter a Number: "))
