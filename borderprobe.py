@@ -22,14 +22,6 @@ def readSubnet():
             print("Invalid Subnet!")
 
 
-def divideSubnet(ipv4_subnet):
-    """
-    Divides subnet into /x where x is x=x+4
-    :param ipv4_subnet:
-    :return: list[Pv4sNetworks]
-    """
-
-    return list(ipv4_subnet.subnets(prefixlen_diff=4, new_prefix=None))
 
 
 
@@ -42,7 +34,7 @@ if __name__ == '__main__':
     if choice == 1:
 
         subnet = readSubnet()
-        scan = Scanner(divideSubnet(subnet))
+        scan = Scanner(subnet)
 
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
