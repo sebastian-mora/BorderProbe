@@ -46,4 +46,4 @@ if __name__ == '__main__':
             scan.hostComboScan()
 
         else:
-            print("Invalid INput")
+            print("Invalid Input")

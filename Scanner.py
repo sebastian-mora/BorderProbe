@@ -42,7 +42,7 @@ class Scanner:
         :return: list[Pv4sNetworks]
         """
 
-        return list(ipv4_subnet.subnets(prefixlen_diff=4, new_prefix=None))
+        return list(ipv4_subnet.subnets(prefixlen_diff=1, new_prefix=None))
 
     def getDecoys(self):
         decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
@@ -54,6 +54,10 @@ class Scanner:
         time = input("Pleas enter a Number: ")
         return list(str(time))
 
+
+
+#TODO Fix bug when host list is 1 object
+
     def getLiveHosts(self):
 
         """
@@ -64,16 +68,22 @@ class Scanner:
         live_hosts = []
 
         print(self.host_scan_results)
-        hosts = self.host_scan_results['nmaprun']["host"]
-        count = 0
-        for host in hosts:
-            if host["status"]["@state"] == "up":
-                print("Host %s is up!" % host["address"]["@addr"])
-                live_hosts.append(host["address"]["@addr"])
-                count += 1
+        try:
+            hosts = self.host_scan_results['nmaprun']["host"]
+            count = 0
 
-        print("Number of Live Hosts discovered: %d" % count)
-        return live_hosts
+            for host in hosts:
+                if host["status"]["@state"] == "up":
+                    print("Host %s is up!" % host["address"]["@addr"])
+                    live_hosts.append(host["address"]["@addr"])
+                    count += 1
+
+            print("Number of Live Hosts discovered: %d" % count)
+            return live_hosts
+        except:
+            print("No Hosts in this file")
+            return None
+
 
     # TODO Still very buggy
 
@@ -147,7 +157,7 @@ class Scanner:
         #Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        menus.processAnimation(p)
+        #menus.processAnimation(p)
 
         print("Scan Complete for: %s", flags[len(flags) - 1])
         stdout, stderr = p.communicate()

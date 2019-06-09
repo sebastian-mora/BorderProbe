@@ -57,7 +57,7 @@ class nmapXMLParser:
 
         if self.main_doc is not None:
             date = datetime.datetime.now()
-            filename = date.strftime('xml_output/%d_%X_LiveHosts.Xml')
+            filename = date.strftime('%d_%X_LiveHosts.Xml')
             f = open(filename, 'w')
 
             f.writelines(xmltodict.unparse(self.main_doc))
@@ -72,12 +72,21 @@ class nmapXMLParser:
         :return:
         """
         data = xmltodict.parse(self.cleanXmlOutput(xml_string))
-        test = self.main_doc
+
 
         if self.main_doc is None:
             self.main_doc = data
 
+
+
         else:
-            hosts = data['nmaprun']["host"]
-            for host in hosts:
-                self.main_doc['nmaprun']['host'].append(host)
+            x = None
+            try:
+                hosts = data['nmaprun']["host"]
+                for host in hosts:
+                    x= host
+                    self.main_doc['nmaprun']['host'].append(host)
+            except:
+                #Add in a temp Host
+                self.main_doc['nmaprun'].update({'host':[]})
+                self.main_doc['nmaprun']['host'].append(x)
