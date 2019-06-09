@@ -72,12 +72,15 @@ class nmapXMLParser:
         :return:
         """
         data = xmltodict.parse(self.cleanXmlOutput(xml_string))
-        test = self.main_doc
+
 
         if self.main_doc is None:
             self.main_doc = data
 
         else:
-            hosts = data['nmaprun']["host"]
-            for host in hosts:
-                self.main_doc['nmaprun']['host'].append(host)
+            try:
+                hosts = data['nmaprun']["host"]
+                for host in hosts:
+                    self.main_doc['nmaprun']['host'].append(host)
+            except:
+                return
