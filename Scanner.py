@@ -12,6 +12,8 @@ class Scanner:
         self.subnets = self.divideSubnet(subnet)
         self.parser = Parser()
 
+        self.host_scan_results = None
+
         self.evasionOptions = {
             1: '',
             2: '-f',
@@ -30,10 +32,11 @@ class Scanner:
         random.shuffle(shuffled_subnets)
         return shuffled_subnets
 
-    # Todo Add check for subnets 26>
+
 
     def divideSubnet(self, ipv4_subnet):
         """
+        TODO: Add Check for Subnets 26>
         Divides subnet into /x where x is x=x+4
         :param ipv4_subnet:
         :return: list[Pv4sNetworks]
@@ -51,22 +54,28 @@ class Scanner:
         time = input("Pleas enter a Number: ")
         return list(str(time))
 
-    # TODO This method is close to done. Finish after parser
+    def getLiveHosts(self):
 
-    # def getLiveHostList(self, file):
-    #     with open(file)as fd:
-    #         doc = xmltodict.parse(fd.read())
-    #
-    #
-    #     hosts = doc['nmaprun']["host"]
-    #
-    #     for host in hosts:
-    #         if host["status"]["@state"] is "up":
-    #             print(host[["address"]["@addr"]])
+        """
+        Uses the complied Host Disovery scan to find live hosts
+        :return: list of host ips
+        """
 
+        live_hosts = []
 
+        print(self.host_scan_results)
+        hosts = self.host_scan_results['nmaprun']["host"]
+        count = 0
+        for host in hosts:
+            if host["status"]["@state"] == "up":
+                print("Host %s is up!" % host["address"]["@addr"])
+                live_hosts.append(host["address"]["@addr"])
+                count += 1
 
+        print("Number of Live Hosts discovered: %d" % count)
+        return live_hosts
 
+    # TODO Still very buggy
 
     def evasionTecs(self):
         """
@@ -100,11 +109,14 @@ class Scanner:
         # nmap -sn subnet
 
         for subnet in self.radomizeSubnetOrder():
-            stream = self.executeNmapCommand(['-sn', '-R', "-n", str(subnet)])
-            stdout, stderr = stream.communicate()
-            self.parser.appendScan(stdout)
+            result = self.executeNmapCommand(['-sn', '-R', "-n", str(subnet)])
 
-        self.parser.save()
+            self.parser.appendScan(result)
+
+        self.parser.saveAsXml()  # Saves All scans into a single XML File
+        self.host_scan_results = self.parser.getXmlAsDic()
+
+        self.getLiveHosts()
 
     def hostComboScan(self):
 
@@ -120,9 +132,9 @@ class Scanner:
     def executeNmapCommand(self, flags):
 
         """
-        Execute an Nmap command and Saves results in (date_nmap_scan.xml)
+        Execute an Nmap command and
         :param flags: ex. ' -B -f -P22'
-        :return: returns name of file
+        :return: stdout
         """
 
         #adds the reqired flags to the start of the list
@@ -132,10 +144,12 @@ class Scanner:
 
         print(flags)
 
+        #Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         menus.processAnimation(p)
 
         print("Scan Complete for: %s", flags[len(flags) - 1])
+        stdout, stderr = p.communicate()
 
-        return p
+        return stdout
