@@ -77,16 +77,25 @@ class nmapXMLParser:
         if self.main_doc is None:
             self.main_doc = data
 
+            try:
+                hosts = self.main_doc['nmaprun']["host"]
+
+                if isinstance(hosts,dict):
+                    self.main_doc['nmaprun'].update({'host': [hosts]})
+
+            except:
+                self.main_doc['nmaprun'].update({'host': []})
 
 
         else:
-            x = None
             try:
                 hosts = data['nmaprun']["host"]
-                for host in hosts:
-                    x= host
-                    self.main_doc['nmaprun']['host'].append(host)
+
+                if isinstance(hosts,dict):
+                    self.main_doc['nmaprun']['host'].append(hosts)
+
+                else:
+                    for host in hosts:
+                        self.main_doc['nmaprun']['host'].append(host)
             except:
-                #Add in a temp Host
-                self.main_doc['nmaprun'].update({'host':[]})
-                self.main_doc['nmaprun']['host'].append(x)
+                pass
