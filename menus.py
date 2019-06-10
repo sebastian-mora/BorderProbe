@@ -54,6 +54,7 @@ def hostDiscovEvasionTech():
 
 def timingOptions():
     print("""
+        Timing Options:
         
         0: Paranoid
         1: Sneaky
@@ -61,6 +62,7 @@ def timingOptions():
         3: Normal
         4: Aggressive
         5: Insane
+        
     """)
 
 def processAnimation(process):

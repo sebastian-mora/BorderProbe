@@ -21,7 +21,7 @@ class Scanner:
             7: '--randomize-hosts'
         }
 
-    def radomizeSubnetOrder(self):
+    def randomizeSubnetOrder(self):
         """
         Takes the subnet list and shuffles the items
         :param subnets: list of subnets
@@ -68,9 +68,9 @@ class Scanner:
         :return:
         """
         mac = "02:00:00:%02x:%02x:%02x" % (random.randint(0, 255),
-                             random.randint(0, 255),
-                             random.randint(0, 255))
-        flags = ['--spoof-mac',mac]
+                                           random.randint(0, 255),
+                                           random.randint(0, 255))
+        flags = ['--spoof-mac', mac]
 
         return flags
 
@@ -80,9 +80,7 @@ class Scanner:
         Uses the complied Host Disovery scan to find live hosts
         :return: list of host ips
         """
-
         live_hosts = []
-
 
         try:
             hosts = host_scan_results['nmaprun']["host"]
@@ -103,7 +101,7 @@ class Scanner:
 
     # TODO Still very buggy
 
-    def evasionTecs(self):
+    def evasionTechniques(self):
         """
         Parses the user input into a Nmap flags
         :return: string
@@ -136,10 +134,10 @@ class Scanner:
 
         parser = Parser()
 
-        for subnet in self.radomizeSubnetOrder():
+        for subnet in self.randomizeSubnetOrder():
             result = self.executeNmapCommand(['-sn', '-R', "-n", str(subnet)])
 
-            parser.appendScan(result)
+            parser.appendHostScan(result)
 
         parser.saveAsXml()  # Saves All scans into a single XML File
         host_scan_results = parser.getXmlAsDic()
@@ -154,14 +152,14 @@ class Scanner:
 
         parser = Parser()
 
-        flags = self.evasionTecs()
+        flags = self.evasionTechniques()
 
-        for subnet in self.radomizeSubnetOrder():
+        for subnet in self.randomizeSubnetOrder():
             temp = list(flags)
             temp.extend(port_check_flags)
             temp.append(str(subnet))
             result = self.executeNmapCommand(temp)
-            parser.appendScan(result)
+            parser.appendHostScan(result)
 
         parser.saveAsXml()
         host_scan_results = parser.getXmlAsDic()

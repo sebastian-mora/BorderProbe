@@ -3,6 +3,8 @@ import datetime
 import xmltodict
 
 
+#TODO  <Runstat> at end of XML is not accurate
+
 class nmapXMLParser:
     """
     This class Creates one main Nmap XML doc to which more scans can be appended then saved.
@@ -65,7 +67,7 @@ class nmapXMLParser:
     def getXmlAsDic(self, ):
         return self.main_doc
 
-    def appendScan(self, xml_string):
+    def appendHostScan(self, xml_string):
         """
         Takes Nmap Xml data in string and appends it to the xml_main doc
         :param xml_string:
