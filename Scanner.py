@@ -10,16 +10,15 @@ class Scanner:
     def __init__(self, subnet):
 
         self.subnets = self.divideSubnet(subnet)
-        self.parser = Parser()
-
-        self.host_scan_results = None
 
         self.evasionOptions = {
             1: '',
             2: '-f',
             3: self.getDecoys,
-            4: self.getTiming(),
-            5: '--randomize-hosts'
+            4: self.getTiming,
+            5: self.getSpoofIP,
+            6: self.getSpoofMac,
+            7: '--randomize-hosts'
         }
 
     def radomizeSubnetOrder(self):
@@ -31,8 +30,6 @@ class Scanner:
         shuffled_subnets = list(self.subnets)
         random.shuffle(shuffled_subnets)
         return shuffled_subnets
-
-
 
     def divideSubnet(self, ipv4_subnet):
         """
@@ -51,14 +48,33 @@ class Scanner:
         return decoy_list
 
     def getTiming(self):
-        time = input("Pleas enter a Number: ")
-        return list(str(time))
+        menus.timingOptions()
+        num = input("Pleas enter a Number: ")
+        timing = ['-T']
+        timing.append(str(num))
+        return timing
 
+    def getSpoofIP(self):
+        ip = input("Please Enter Spoof IP: ")
+        flags = ['-S', ip]
+        return flags
 
+    def getSpoofMac(self):
 
-#TODO Fix bug when host list is 1 object
+        """
+        Gens random Unicast Mac
+        https://stackoverflow.com/questions/8484877/mac-address-generator-in-python
 
-    def getLiveHosts(self):
+        :return:
+        """
+        mac = "02:00:00:%02x:%02x:%02x" % (random.randint(0, 255),
+                             random.randint(0, 255),
+                             random.randint(0, 255))
+        flags = ['--spoof-mac',mac]
+
+        return flags
+
+    def getLiveHosts(self, host_scan_results):
 
         """
         Uses the complied Host Disovery scan to find live hosts
@@ -67,9 +83,9 @@ class Scanner:
 
         live_hosts = []
 
-        print(self.host_scan_results)
+
         try:
-            hosts = self.host_scan_results['nmaprun']["host"]
+            hosts = host_scan_results['nmaprun']["host"]
             count = 0
 
             for host in hosts:
@@ -80,10 +96,10 @@ class Scanner:
 
             print("Number of Live Hosts discovered: %d" % count)
             return live_hosts
+
         except:
             print("No Hosts in this file")
             return None
-
 
     # TODO Still very buggy
 
@@ -118,26 +134,42 @@ class Scanner:
     def pingOnlyScan(self):
         # nmap -sn subnet
 
+        parser = Parser()
+
         for subnet in self.radomizeSubnetOrder():
             result = self.executeNmapCommand(['-sn', '-R', "-n", str(subnet)])
 
-            self.parser.appendScan(result)
+            parser.appendScan(result)
 
-        self.parser.saveAsXml()  # Saves All scans into a single XML File
-        self.host_scan_results = self.parser.getXmlAsDic()
+        parser.saveAsXml()  # Saves All scans into a single XML File
+        host_scan_results = parser.getXmlAsDic()
 
-        self.getLiveHosts()
+        self.getLiveHosts(host_scan_results)
 
     def hostComboScan(self):
 
         # nmap -sn (no port) -PS22-25,80,3389 (SYN on common ports) -PA22-25,80,3389 (ACK on common ports) subnet
+
+        port_check_flags = ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389']
+
+        parser = Parser()
+
         flags = self.evasionTecs()
 
         for subnet in self.radomizeSubnetOrder():
             temp = list(flags)
+            temp.extend(port_check_flags)
             temp.append(str(subnet))
-            print(temp)
-            self.executeNmapCommand(temp)
+            result = self.executeNmapCommand(temp)
+            parser.appendScan(result)
+
+        parser.saveAsXml()
+        host_scan_results = parser.getXmlAsDic()
+        self.getLiveHosts(host_scan_results)
+
+    # TODO Stage 2 Port Scan
+    def stageTwoScan(self):
+        pass
 
     def executeNmapCommand(self, flags):
 
@@ -147,17 +179,17 @@ class Scanner:
         :return: stdout
         """
 
-        #adds the reqired flags to the start of the list
+        # adds the reqired flags to the start of the list
         flags.insert(0, "nmap")
         flags.insert(1, "-oX")
         flags.insert(2, '-')
 
         print(flags)
 
-        #Starts the Nmap Process
+        # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        #menus.processAnimation(p)
+        # menus.processAnimation(p)
 
         print("Scan Complete for: %s", flags[len(flags) - 1])
         stdout, stderr = p.communicate()

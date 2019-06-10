@@ -45,7 +45,9 @@ def hostDiscovEvasionTech():
         2. Fragmentation (Root Required)
         3. Decoy Scan 
         4. Timing 1-4
-        5. Randomize Hosts
+        5. Spoof Ip
+        6. Spoof Mac
+        7. Randomize Hosts
         
     """)
 
