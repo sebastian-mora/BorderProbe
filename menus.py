@@ -33,7 +33,8 @@ def hostDiscoveryMethods():
         Please Chose a Host Disovery method:
         
         1. ICMP Only Scan 
-        2. Combination ICMP with TCP top 20 port
+        2. IP Protocol Ping
+        3. Custom Scan
     
     """)
 

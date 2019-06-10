@@ -1,15 +1,16 @@
 import random
 import subprocess
-
 import menus
 from nmapXMLParser import nmapXMLParser as Parser
 
+
+# Host Discovery Techniques https://nmap.org/book/host-discovery-strategies.html
 
 class Scanner:
 
     def __init__(self, subnet):
 
-        self.subnets = self.divideSubnet(subnet)
+        self.subnets = self.divideSubnet(subnet, 1)
 
         self.evasionOptions = {
             1: '',
@@ -31,7 +32,7 @@ class Scanner:
         random.shuffle(shuffled_subnets)
         return shuffled_subnets
 
-    def divideSubnet(self, ipv4_subnet):
+    def divideSubnet(self, ipv4_subnet, prefix_len=1):
         """
         TODO: Add Check for Subnets 26>
         Divides subnet into /x where x is x=x+4
@@ -39,7 +40,7 @@ class Scanner:
         :return: list[Pv4sNetworks]
         """
 
-        return list(ipv4_subnet.subnets(prefixlen_diff=1, new_prefix=None))
+        return list(ipv4_subnet.subnets(prefixlen_diff=prefix_len, new_prefix=None))
 
     def getDecoys(self):
         decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
@@ -99,7 +100,7 @@ class Scanner:
             print("No Hosts in this file")
             return None
 
-    # TODO Still very buggy
+
 
     def evasionTechniques(self):
         """
@@ -113,9 +114,7 @@ class Scanner:
         choice = list(map(int, choice.split(',')))
 
         for item in choice:
-
             if item in self.evasionOptions:
-
                 if callable(self.evasionOptions[item]):
 
                     flag_list.extend(self.evasionOptions[item]())
@@ -125,17 +124,15 @@ class Scanner:
             else:
                 print("invaild choice: %s", item)
 
-        print(flag_list)
-
         return flag_list
 
-    def pingOnlyScan(self):
+    def hostPingScan(self):
         # nmap -sn subnet
 
         parser = Parser()
 
         for subnet in self.randomizeSubnetOrder():
-            result = self.executeNmapCommand(['-sn', '-R', "-n", str(subnet)])
+            result = self.executeNmapCommand(['-sn','-PE', '-R', "-n", str(subnet)])
 
             parser.appendHostScan(result)
 
@@ -144,7 +141,24 @@ class Scanner:
 
         self.getLiveHosts(host_scan_results)
 
-    def hostComboScan(self):
+    def hostIpPing(self):
+        # namp -n -sn --send-ip 192.168.33.37
+
+        scan_flags = ['-n', '-sn', '--send-ip']
+        parser = Parser()
+
+        for subnet in self.randomizeSubnetOrder():
+            command = list(scan_flags)
+            command.append(str(subnet))
+            result = self.executeNmapCommand(command)
+            parser.appendHostScan(result)
+
+        parser.saveAsXml()
+        host_scan_results = parser.getXmlAsDic()
+        self.getLiveHosts(host_scan_results)
+        return host_scan_results
+
+    def hostCustomScan(self):
 
         # nmap -sn (no port) -PS22-25,80,3389 (SYN on common ports) -PA22-25,80,3389 (ACK on common ports) subnet
 
@@ -155,10 +169,10 @@ class Scanner:
         flags = self.evasionTechniques()
 
         for subnet in self.randomizeSubnetOrder():
-            temp = list(flags)
-            temp.extend(port_check_flags)
-            temp.append(str(subnet))
-            result = self.executeNmapCommand(temp)
+            flag_list = list(flags)
+            flag_list.extend(port_check_flags)
+            flag_list.append(str(subnet))
+            result = self.executeNmapCommand(flag_list)
             parser.appendHostScan(result)
 
         parser.saveAsXml()
@@ -177,7 +191,7 @@ class Scanner:
         :return: stdout
         """
 
-        # adds the reqired flags to the start of the list
+        # adds the required flags to the start of the list
         flags.insert(0, "nmap")
         flags.insert(1, "-oX")
         flags.insert(2, '-')
@@ -187,7 +201,7 @@ class Scanner:
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        # menus.processAnimation(p)
+        menus.processAnimation(p)
 
         print("Scan Complete for: %s", flags[len(flags) - 1])
         stdout, stderr = p.communicate()

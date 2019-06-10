@@ -22,14 +22,10 @@ def readSubnet():
             print("Invalid Subnet!")
 
 
-
-
-
 if __name__ == '__main__':
     menu.startMenu()
 
     choice = menu.readInt()
-
 
     if choice == 1:
 
@@ -40,10 +36,13 @@ if __name__ == '__main__':
         choice = menu.readInt()
 
         if choice == 1:
-            scan.pingOnlyScan()
+            scan.hostPingScan()
 
         elif choice == 2:
-            scan.hostComboScan()
+            scan.hostIpPing()
+
+        elif choice == 3:
+            scan.hostCustomScan()
 
         else:
             print("Invalid Input")
