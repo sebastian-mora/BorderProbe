@@ -11,7 +11,6 @@ class Scanner:
 
     def __init__(self, subnet):
 
-
         self.evasionOptions = {
             1: '',
             2: '-f',
@@ -41,15 +40,15 @@ class Scanner:
         :param ipv4_subnet:
         :return: list[IPv4sNetworks]
         """
-        subnet_string= str(ipv4_subnet)
-        prefix_len = int(subnet_string[subnet_string.index('/')+1:])
+        subnet_string = str(ipv4_subnet)
+        prefix_len = int(subnet_string[subnet_string.index('/') + 1:])
         print(prefix_len)
 
         if prefix_len < 24:
             prefix_len = 24 - prefix_len
 
         else:
-            prefix_len=0
+            prefix_len = 0
 
         return list(ipv4_subnet.subnets(prefixlen_diff=prefix_len, new_prefix=None))
 
@@ -71,7 +70,7 @@ class Scanner:
         flags = ['-S', ip]
         return flags
 
-    def saveLiveHosts(self,live_hosts):
+    def saveLiveHosts(self, live_hosts):
         date = datetime.datetime.now()
         filename = date.strftime('output/%d_%X_LiveHosts.txt')
         f = open(filename, 'w')
@@ -121,8 +120,6 @@ class Scanner:
             print("No Hosts in this file")
             return None
 
-
-
     def evasionTechniques(self):
         """
         Parses the user input into a Nmap flags
@@ -164,7 +161,7 @@ class Scanner:
         live_hosts = []
 
         for subnet in self.randomizeSubnetOrder(subnet):
-            result = self.executeNmapCommand(['-sn','-PE', '-R', "-n", str(subnet)])
+            result = self.executeNmapCommand(['-sn', '-PE', '-R', "-n", str(subnet)])
             result = parser.getLiveHosts(result)
 
             if result:
@@ -255,8 +252,7 @@ class Scanner:
 
         self.executeNmapCommand(flags, filename)
 
-
-    def executeNmapCommand(self, flags, file_name = None):
+    def executeNmapCommand(self, flags, file_name=None):
 
         """
         Execute an Nmap command.
@@ -272,7 +268,7 @@ class Scanner:
         if file_name:
             flags.insert(2, file_name)
         else:
-            flags.insert(2,'-')
+            flags.insert(2, '-')
 
         print(flags)
 
@@ -284,7 +280,7 @@ class Scanner:
         print("Scan Complete for: %s" % flags[len(flags) - 1])
         stdout, stderr = p.communicate()
 
-        #TODO BASIC BUT WORKS
+        # TODO BASIC BUT WORKS
         if "QUITTING" in str(stderr):
             print('\n' + str(stderr))
 
