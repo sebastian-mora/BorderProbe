@@ -22,6 +22,8 @@ class Scanner:
             7: '--randomize-hosts'
         }
 
+        self.evasion_used = []
+
     def randomizeSubnetOrder(self, subnets):
         """
         Takes the subnet list and shuffles the items
@@ -76,6 +78,8 @@ class Scanner:
 
         for host in live_hosts:
             f.write("%s\n" % str(host))
+        f.close()
+        return filename
 
     def getSpoofMac(self):
 
@@ -141,10 +145,19 @@ class Scanner:
             else:
                 print("invaild choice: %s", item)
 
+        self.evasion_used = flag_list
+
         return flag_list
 
     def hostPingScan(self, subnet):
         # nmap -sn subnet
+
+        """
+        Uses ping only scan and saves result to txt file
+
+        :param subnet: Full Subnet range
+        :return: File name
+        """
 
         parser = Parser()
 
@@ -157,8 +170,8 @@ class Scanner:
             if result:
                 live_hosts.extend(result)
 
-        self.saveLiveHosts(live_hosts)
-        return live_hosts
+        file_name = self.saveLiveHosts(live_hosts)
+        return file_name
 
     def hostIpPing(self, subnet):
         # namp -n -sn --send-ip 192.168.33.37
@@ -211,20 +224,30 @@ class Scanner:
         """
             Using the list of live host from the first scan
             This method will do a deeper scan suing the
-            flags (
+            flags (--randomize-hosts -n -Pn -A -sSVC (Phase 1 Evasion) --top-ports 1000 -iL filename-of-live-hosts.txt )
+            *Any evasion Methods used in Phase one will also be applied
+
         :param live_hosts_file: Txt file will be passed to Nmap to scan
         :return: append results to XML Scan file
         """
 
-        flags = []
+        flags = ['--randomize-hosts', '-n', '-Pn', '-A', '-sSVC', '--top-ports', '1000', '-iL', live_hosts_file]
 
+        if self.evasion_used:
+            flags.extend(self.evasion_used)
+
+        date = datetime.datetime.now()
+        filename = date.strftime('%d_%X_Scan_Results.xml')
+
+        self.executeNmapCommand(flags, filename)
 
         pass
 
-    def executeNmapCommand(self, flags):
+    def executeNmapCommand(self, flags, file_name = None):
 
         """
-        Execute an Nmap command and
+        Execute an Nmap command.
+        :param file_name: If file name is set method will save Nmap Result. If not result will be returned from stdout
         :param flags: ex. ' -B -f -P22'
         :return: stdout
         """
@@ -232,7 +255,11 @@ class Scanner:
         # adds the required flags to the start of the list
         flags.insert(0, "nmap")
         flags.insert(1, "-oX")
-        flags.insert(2, '-')
+
+        if file_name:
+            flags.insert(2, file_name)
+        else:
+            flags.insert(2,'-')
 
         print(flags)
 
@@ -243,5 +270,9 @@ class Scanner:
 
         print("Scan Complete for: %s", flags[len(flags) - 1])
         stdout, stderr = p.communicate()
+
+        #TODO BASIC BUT WORKS
+        if "QUITTING" in str(stderr):
+            print('\n'+ stderr)
 
         return stdout

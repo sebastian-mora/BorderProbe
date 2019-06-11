@@ -36,8 +36,8 @@ if __name__ == '__main__':
         choice = menu.readInt()
 
         if choice == 1:
-           live_hosts = scan.hostPingScan(subnet)
-           scan.phaseTwoScan(live_hosts)
+            live_hosts_file = scan.hostPingScan(subnet)
+            scan.phaseTwoScan(live_hosts_file)
 
         elif choice == 2:
             live_hosts = scan.hostIpPing(subnet)
