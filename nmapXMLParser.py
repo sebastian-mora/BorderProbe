@@ -59,15 +59,45 @@ class nmapXMLParser:
 
         if self.main_doc is not None:
             date = datetime.datetime.now()
-            filename = date.strftime('xml_output/%d_%X_LiveHosts.Xml')
+            filename = date.strftime('output/%d_%X_LiveHosts.Xml')
             f = open(filename, 'w')
 
             f.writelines(xmltodict.unparse(self.main_doc))
 
-    def getXmlAsDic(self, ):
+    def getXmlAsDic(self, xml_string ):
         return self.main_doc
 
-    def appendHostScan(self, xml_string):
+    def getLiveHosts(self, xml_string):
+        """
+        Take Nmap xml output and return a list of Live host ips
+        :param xml_string:
+        :return: list(ipv4)
+        """
+        data = xmltodict.parse(self.cleanXmlOutput(xml_string))
+
+        try:
+            hosts = data['nmaprun']["host"]
+
+            if isinstance(hosts, dict):
+                ip = hosts['address']['@addr']
+                return [ip]
+
+            else:
+                hosts = data['nmaprun']['host']
+                live_hosts = []
+                for host in hosts:
+
+                    live_hosts.append(host['address'['@addr']])
+
+                return live_hosts
+
+
+        except:
+            return None
+
+
+
+    def appendScan(self, xml_string):
         """
         Takes Nmap Xml data in string and appends it to the xml_main doc
         :param xml_string:

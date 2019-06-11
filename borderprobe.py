@@ -36,13 +36,16 @@ if __name__ == '__main__':
         choice = menu.readInt()
 
         if choice == 1:
-            scan.hostPingScan()
+           live_hosts = scan.hostPingScan(subnet)
+           scan.phaseTwoScan(live_hosts)
 
         elif choice == 2:
-            scan.hostIpPing()
+            live_hosts = scan.hostIpPing(subnet)
+            scan.phaseTwoScan(live_hosts)
 
         elif choice == 3:
-            scan.hostCustomScan()
+            live_hosts = scan.hostCustomScan(subnet)
+            scan.phaseTwoScan(live_hosts)
 
         else:
             print("Invalid Input")

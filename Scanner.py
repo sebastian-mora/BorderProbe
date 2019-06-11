@@ -1,3 +1,4 @@
+import datetime
 import random
 import subprocess
 import menus
@@ -10,7 +11,6 @@ class Scanner:
 
     def __init__(self, subnet):
 
-        self.subnets = self.divideSubnet(subnet, 1)
 
         self.evasionOptions = {
             1: '',
@@ -22,23 +22,32 @@ class Scanner:
             7: '--randomize-hosts'
         }
 
-    def randomizeSubnetOrder(self):
+    def randomizeSubnetOrder(self, subnets):
         """
         Takes the subnet list and shuffles the items
         :param subnets: list of subnets
         :return: list[subnets]
         """
-        shuffled_subnets = list(self.subnets)
+        shuffled_subnets = list(subnets)
         random.shuffle(shuffled_subnets)
         return shuffled_subnets
 
-    def divideSubnet(self, ipv4_subnet, prefix_len=1):
+    def divideSubnet(self, ipv4_subnet):
         """
-        TODO: Add Check for Subnets 26>
-        Divides subnet into /x where x is x=x+4
+
+        Divides subnet into /24
         :param ipv4_subnet:
-        :return: list[Pv4sNetworks]
+        :return: list[IPv4sNetworks]
         """
+        subnet_string= str(ipv4_subnet)
+        prefix_len = int(subnet_string[subnet_string.index('/')+1:])
+        print(prefix_len)
+
+        if prefix_len < 24:
+            prefix_len = 24 - prefix_len
+
+        else:
+            prefix_len=0
 
         return list(ipv4_subnet.subnets(prefixlen_diff=prefix_len, new_prefix=None))
 
@@ -59,6 +68,14 @@ class Scanner:
         ip = input("Please Enter Spoof IP: ")
         flags = ['-S', ip]
         return flags
+
+    def saveLiveHosts(self,live_hosts):
+        date = datetime.datetime.now()
+        filename = date.strftime('output/%d_%X_LiveHosts.txt')
+        f = open(filename, 'w')
+
+        for host in live_hosts:
+            f.write("%s\n" % str(host))
 
     def getSpoofMac(self):
 
@@ -126,41 +143,46 @@ class Scanner:
 
         return flag_list
 
-    def hostPingScan(self):
+    def hostPingScan(self, subnet):
         # nmap -sn subnet
 
         parser = Parser()
 
-        for subnet in self.randomizeSubnetOrder():
+        live_hosts = []
+
+        for subnet in self.randomizeSubnetOrder(subnet):
             result = self.executeNmapCommand(['-sn','-PE', '-R', "-n", str(subnet)])
+            result = parser.getLiveHosts(result)
 
-            parser.appendHostScan(result)
+            if result:
+                live_hosts.extend(result)
 
-        parser.saveAsXml()  # Saves All scans into a single XML File
-        host_scan_results = parser.getXmlAsDic()
+        self.saveLiveHosts(live_hosts)
+        return live_hosts
 
-        self.getLiveHosts(host_scan_results)
-
-    def hostIpPing(self):
+    def hostIpPing(self, subnet):
         # namp -n -sn --send-ip 192.168.33.37
 
         scan_flags = ['-n', '-sn', '--send-ip']
         parser = Parser()
 
-        for subnet in self.randomizeSubnetOrder():
+        live_hosts = []
+        for subnet in self.randomizeSubnetOrder(subnet):
             command = list(scan_flags)
             command.append(str(subnet))
             result = self.executeNmapCommand(command)
-            parser.appendHostScan(result)
+            result = parser.getLiveHosts(result)
 
-        parser.saveAsXml()
-        host_scan_results = parser.getXmlAsDic()
-        self.getLiveHosts(host_scan_results)
-        return host_scan_results
+            if result:
+                live_hosts.extend(result)
 
-    def hostCustomScan(self):
+        self.saveLiveHosts(live_hosts)
+        return live_hosts
+
+    def hostCustomScan(self, subnet):
 
         # nmap -sn (no port) -PS22-25,80,3389 (SYN on common ports) -PA22-25,80,3389 (ACK on common ports) subnet
+        # Check for SSH, Telnet, Ftp, RPC, Http, 445 (SMB), 135 (RPC), 139 (smb), 88 (Kerberos),
 
         port_check_flags = ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389']
 
@@ -168,19 +190,35 @@ class Scanner:
 
         flags = self.evasionTechniques()
 
-        for subnet in self.randomizeSubnetOrder():
+        live_hosts = []
+
+        for subnet in self.randomizeSubnetOrder(subnet):
             flag_list = list(flags)
             flag_list.extend(port_check_flags)
             flag_list.append(str(subnet))
             result = self.executeNmapCommand(flag_list)
-            parser.appendHostScan(result)
+            result = parser.getLiveHosts(result)
 
-        parser.saveAsXml()
-        host_scan_results = parser.getXmlAsDic()
-        self.getLiveHosts(host_scan_results)
+            if result:
+                live_hosts.extend(result)
+
+        self.saveLiveHosts(live_hosts)
+        return live_hosts
 
     # TODO Stage 2 Port Scan
-    def stageTwoScan(self):
+    def phaseTwoScan(self, live_hosts_file):
+
+        """
+            Using the list of live host from the first scan
+            This method will do a deeper scan suing the
+            flags (
+        :param live_hosts_file: Txt file will be passed to Nmap to scan
+        :return: append results to XML Scan file
+        """
+
+        flags = []
+
+
         pass
 
     def executeNmapCommand(self, flags):
