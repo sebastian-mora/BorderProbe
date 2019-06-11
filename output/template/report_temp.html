@@ -51,14 +51,26 @@
             <table border="1" id="report">
             <tr>
                 <th>Risk Rating </th>
-                <th>Critical</th>
+                <th id = 'risk'>Critical</th>
             </tr>
             <tr>
                 <th>Description</th>
-                <td>
+                <td id="description">
                     An IPv4 network ranges defined within the Scope of Work as a target
                     network range for segmentation
                     testing (X.X.X.X/24) can be reached from the BHN PLS campus network segment (X.X.X.X/24)
+                    <div>
+                        <ul>
+                            <li>Open Ports / Services: </li>
+                            <ul id="open-ports"><li>80 Apache2</li></ul>
+                        </ul>
+
+                        <ul>
+                            <li>OS Detection:</li>
+                            <ul id="os_detection"><li>Window xp sp2</li></ul>
+                        </ul>
+                    </div>
+
                 </td>
             </tr>
             <tr>
@@ -71,7 +83,7 @@
             </tr>
             <tr>
                 <th>Affected {URLs / IP Addresses / Hosts / User Accounts}</th>
-                <td>XX.X.XX.X/24</td>
+                <td id="address">XX.X.XX.X/24</td>
             </tr>
             <tr>
                 <th>References</th>
