@@ -176,6 +176,13 @@ class Scanner:
     def hostIpPing(self, subnet):
         # namp -n -sn --send-ip 192.168.33.37
 
+        """
+        Uses ping only scan and saves result to txt file
+
+        :param subnet: Full Subnet range
+        :return: File name
+        """
+
         scan_flags = ['-n', '-sn', '--send-ip']
         parser = Parser()
 
@@ -189,10 +196,17 @@ class Scanner:
             if result:
                 live_hosts.extend(result)
 
-        self.saveLiveHosts(live_hosts)
-        return live_hosts
+        file_name = self.saveLiveHosts(live_hosts)
+        return file_name
 
     def hostCustomScan(self, subnet):
+
+        """
+        Uses ping only scan and saves result to txt file
+
+        :param subnet: Full Subnet range
+        :return: File name
+        """
 
         # nmap -sn (no port) -PS22-25,80,3389 (SYN on common ports) -PA22-25,80,3389 (ACK on common ports) subnet
         # Check for SSH, Telnet, Ftp, RPC, Http, 445 (SMB), 135 (RPC), 139 (smb), 88 (Kerberos),
@@ -215,8 +229,8 @@ class Scanner:
             if result:
                 live_hosts.extend(result)
 
-        self.saveLiveHosts(live_hosts)
-        return live_hosts
+        file_name = self.saveLiveHosts(live_hosts)
+        return file_name
 
     # TODO Stage 2 Port Scan
     def phaseTwoScan(self, live_hosts_file):
@@ -241,7 +255,6 @@ class Scanner:
 
         self.executeNmapCommand(flags, filename)
 
-        pass
 
     def executeNmapCommand(self, flags, file_name = None):
 
@@ -268,11 +281,11 @@ class Scanner:
 
         menus.processAnimation(p)
 
-        print("Scan Complete for: %s", flags[len(flags) - 1])
+        print("Scan Complete for: %s" % flags[len(flags) - 1])
         stdout, stderr = p.communicate()
 
         #TODO BASIC BUT WORKS
         if "QUITTING" in str(stderr):
-            print('\n'+ stderr)
+            print('\n' + str(stderr))
 
         return stdout
