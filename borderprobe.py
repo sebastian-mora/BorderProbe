@@ -1,7 +1,7 @@
 import ipaddress
-
 import menus as menu
 from Scanner import Scanner
+import Report
 
 
 def readSubnet():
@@ -37,7 +37,8 @@ if __name__ == '__main__':
 
         if choice == 1:
             live_hosts_file = scan.hostPingScan(subnet)
-            scan.phaseTwoScan(live_hosts_file)
+            xml_data = scan.phaseTwoScan(live_hosts_file)
+            Report.Report(xml_data)
 
         elif choice == 2:
             live_hosts = scan.hostIpPing(subnet)

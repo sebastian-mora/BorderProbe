@@ -250,7 +250,9 @@ class Scanner:
         date = datetime.datetime.now()
         filename = date.strftime('%d_%X_Scan_Results.xml')
 
-        self.executeNmapCommand(flags, filename)
+        xml_data = self.executeNmapCommand(flags, filename)
+
+        return filename
 
     def executeNmapCommand(self, flags, file_name=None):
 
