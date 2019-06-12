@@ -78,6 +78,7 @@ class Report:
 
 
     def generateTable(self, host):
+
         table = copy.copy(self.table_template)
 
         target_ip = host["address"]["@addr"]
