@@ -3,7 +3,7 @@ import datetime
 import xmltodict
 
 
-#TODO  <Runstat> at end of XML is not accurate
+# TODO  <Runstat> at end of XML is not accurate
 
 class nmapXMLParser:
     """
@@ -64,7 +64,7 @@ class nmapXMLParser:
 
             f.writelines(xmltodict.unparse(self.main_doc))
 
-    def getXmlAsDic(self, xml_string ):
+    def getXmlAsDic(self, xml_string):
         return self.main_doc
 
     def getLiveHosts(self, xml_string):
@@ -86,7 +86,6 @@ class nmapXMLParser:
                 hosts = data['nmaprun']['host']
                 live_hosts = []
                 for host in hosts:
-
                     live_hosts.append(host['address'['@addr']])
 
                 return live_hosts
@@ -94,8 +93,6 @@ class nmapXMLParser:
 
         except:
             return None
-
-
 
     def appendScan(self, xml_string):
         """
@@ -105,14 +102,13 @@ class nmapXMLParser:
         """
         data = xmltodict.parse(self.cleanXmlOutput(xml_string))
 
-
         if self.main_doc is None:
             self.main_doc = data
 
             try:
                 hosts = self.main_doc['nmaprun']["host"]
 
-                if isinstance(hosts,dict):
+                if isinstance(hosts, dict):
                     self.main_doc['nmaprun'].update({'host': [hosts]})
 
             except:
@@ -123,7 +119,7 @@ class nmapXMLParser:
             try:
                 hosts = data['nmaprun']["host"]
 
-                if isinstance(hosts,dict):
+                if isinstance(hosts, dict):
                     self.main_doc['nmaprun']['host'].append(hosts)
 
                 else:

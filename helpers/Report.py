@@ -1,6 +1,8 @@
-from bs4 import BeautifulSoup
 import copy
+
 import xmltodict
+from bs4 import BeautifulSoup
+
 
 class Report:
 
@@ -18,7 +20,6 @@ class Report:
         self.subnets = subnets
         self.generateReport(self.save_path)
 
-
     def getBS(self, filename):
         with open(filename)as f:
             html = BeautifulSoup(f, 'html.parser')
@@ -28,6 +29,7 @@ class Report:
         with open(filename) as fd:
             xml_doc = xmltodict.parse(fd.read())
         return xml_doc
+
     def generateReport(self, file_path):
 
         self.report.find(id='cidr_ranges').string = ''.join(self.subnets)
@@ -61,7 +63,6 @@ class Report:
         with open(path, "w") as file:
             file.write(str(self.report))
 
-
     def getOpenPorts(self, host):
         try:
             ports = host["ports"]['port']
@@ -86,20 +87,17 @@ class Report:
         except:
             return ["No OS detected"]
 
-
-
     def generateScreenShotTable(self, host):
 
         table = copy.copy(self.table_template)
 
         target_ip = host["address"]["@addr"]
-        open_ports  = self.getOpenPorts(host)
+        open_ports = self.getOpenPorts(host)
         os_detected = self.getTopOS(host)
 
         table.find(id='host_ip').string = target_ip
 
-
-        #TODO FAILED HERE
+        # TODO FAILED HERE
         for port in open_ports:
             li_new_tag = table.new_tag('li')
             li_new_tag.string = port
@@ -115,5 +113,3 @@ class Report:
             count += 1
 
         return table
-
-

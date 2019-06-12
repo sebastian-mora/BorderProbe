@@ -1,9 +1,10 @@
 import datetime
+import os
 import random
 import subprocess
+
 from helpers import menus
 from helpers.nmapXMLParser import nmapXMLParser as Parser
-import os
 
 
 # Host Discovery Techniques https://nmap.org/book/host-discovery-strategies.html
@@ -245,10 +246,9 @@ class Scanner:
         :return: append results to XML Scan file
         """
 
-        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000', '--script-timeout', '20', '-iL', live_hosts_file]
-        flags = ['--randomize-hosts', '-n', '-Pn',  '--top-ports', '100', '--script-timeout', '20', '-iL',
+        # flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000', '--script-timeout', '20', '-iL', live_hosts_file]
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL',
                  live_hosts_file]
-
 
         if self.evasion_used:
             flags.extend(self.evasion_used)

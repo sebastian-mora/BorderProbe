@@ -1,148 +1,152 @@
 <html>
-    <head>
-            <style>
-                               body {
-                        font-family: "Times New Roman";
+<head>
+    <style>
+        body {
+            font-family: "Times New Roman";
 
-                    }
+        }
 
-                    h2,h3,p {
-                        margin-left: 50px;
-                    }
+        h2, h3, p {
+            margin-left: 50px;
+        }
 
-                    p{
+        p {
 
-                    }
+        }
 
-                    h2,h3 {
-                        color: #336bed;
-                    }
+        h2, h3 {
+            color: #336bed;
+        }
 
-                    table {
-                        border-collapse: collapse;
-                        width: 75%;
-                        margin: auto auto;
-                        margin-bottom: 50px;
-                    }
+        table {
+            border-collapse: collapse;
+            width: 75%;
+            margin: auto auto;
+            margin-bottom: 50px;
+        }
 
-                    th,td {
-                        padding: 15px;
-                    }
+        th, td {
+            padding: 15px;
+        }
 
-                    tr:nth-child(even) {background-color: #f2f2f2;}
-
-
-                    table.ranges td{
-                        display: inline-block;
-                        vertical-align: top;
-
-                    }
-
-                    #hosts {
-                        width: 50%;
-                        height: 50%;
-                    }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
 
 
-                    #hosts td {
-                        white-space: nowrap;
-                    }
-            </style>
-    </head>
+        table.ranges td {
+            display: inline-block;
+            vertical-align: top;
 
-    <body>
+        }
 
-    <div>
-            <h2>Segmentation Testing</h2>
-            <p>
-                    For the segmentation phase, the BHN
-                Offensive Security Team attempted to connect to IPv4 network
-                addresses defined within the Scope of Work for the engagement from a non
-                -
-                PCI campus network
-                segment. The <span class="target"> </span> network environment defined within the Scope of Work lack segmentation
-                from n
-                etwork connections originating from a non
-                -
-                CDE network. An ICMP reply, TCP 3
-                -
-                way handshake,
-                or response data retrieved from a stateless UDP connection constitutes a violation of PCI compliance.
-                Any findings illustrated below which concern segmentation compl
-                iance should be remediated based on
-                regular prioritization of risk remediation
-            </p>
-        </div>
+        #hosts {
+            width: 50%;
+            height: 50%;
+        }
 
 
-        <div id="scope">
-            <h3>5.1 Scope</h3>
+        #hosts td {
+            white-space: nowrap;
+        }
+    </style>
+</head>
 
-            <table class="ranges" border="1">
-                <tr>
-                    <th>CIDR Ranges</th>
-                </tr>
-                <tr>
-                    <td id="cidr_ranges">
-                    </td>
-                </tr>
-            </table>
-        </div>
+<body>
 
-        <h3><i>Segmentation Failure(s) 5.2</i></h3>
+<div>
+    <h2>Segmentation Testing</h2>
+    <p>
+        For the segmentation phase, the BHN
+        Offensive Security Team attempted to connect to IPv4 network
+        addresses defined within the Scope of Work for the engagement from a non
+        -
+        PCI campus network
+        segment. The <span class="target"> </span> network environment defined within the Scope of Work lack
+        segmentation
+        from n
+        etwork connections originating from a non
+        -
+        CDE network. An ICMP reply, TCP 3
+        -
+        way handshake,
+        or response data retrieved from a stateless UDP connection constitutes a violation of PCI compliance.
+        Any findings illustrated below which concern segmentation compl
+        iance should be remediated based on
+        regular prioritization of risk remediation
+    </p>
+</div>
 
 
-        <div id="reports">
-            <div>
-    <table border="1" id="report">
+<div id="scope">
+    <h3>5.1 Scope</h3>
+
+    <table border="1" class="ranges">
         <tr>
-            <th>Risk Rating</th>
-            <th id='risk'>Critical</th>
+            <th>CIDR Ranges</th>
         </tr>
         <tr>
-            <th>Description</th>
-            <td id="description">
-                An IPv4 network ranges defined within the Scope of Work as a target
-                network range for segmentation
-                testing <span class="target">(X.X.X.X/24) </span> can be reached from the BHN PLS campus network segment
-                <span id="attacker">(X.X.X.X/24) </span>
-            </td>
-        </tr>
-        <tr>
-            <th>Recommendation</th>
-            <td>
-                Ensure proper segmentation procedures are implemented to prevent campus network clients from
-                connecting to
-                privileged network segments
-            </td>
-        </tr>
-        <tr>
-            <th>Affected {URLs / IP Addresses / Hosts / User Accounts}</th>
-            <td><span class="target">(X.X.X.X/24) </span></td>
-        </tr>
-        <tr>
-            <th>References</th>
-            <td>N/A</td>
-        </tr>
-        <tr>
-            <th>Notes</th>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Screenshots</th>
-            <td>
-
-
-                <div id="hosts">
-
-                </div>
-
+            <td id="cidr_ranges">
             </td>
         </tr>
     </table>
 </div>
 
-        </div>
+<h3><i>Segmentation Failure(s) 5.2</i></h3>
 
-    </body>
+
+<div id="reports">
+    <div>
+        <table border="1" id="report">
+            <tr>
+                <th>Risk Rating</th>
+                <th id='risk'>Critical</th>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td id="description">
+                    An IPv4 network ranges defined within the Scope of Work as a target
+                    network range for segmentation
+                    testing <span class="target">(X.X.X.X/24) </span> can be reached from the BHN PLS campus network
+                    segment
+                    <span id="attacker">(X.X.X.X/24) </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Recommendation</th>
+                <td>
+                    Ensure proper segmentation procedures are implemented to prevent campus network clients from
+                    connecting to
+                    privileged network segments
+                </td>
+            </tr>
+            <tr>
+                <th>Affected {URLs / IP Addresses / Hosts / User Accounts}</th>
+                <td><span class="target">(X.X.X.X/24) </span></td>
+            </tr>
+            <tr>
+                <th>References</th>
+                <td>N/A</td>
+            </tr>
+            <tr>
+                <th>Notes</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Screenshots</th>
+                <td>
+
+
+                    <div id="hosts">
+
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
 </html>

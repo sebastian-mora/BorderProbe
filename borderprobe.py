@@ -1,7 +1,8 @@
 import ipaddress
+import socket
+
 from helpers import menus as menu, Report
 from helpers.Scanner import Scanner
-import socket
 
 
 def readSubnet():
@@ -21,6 +22,7 @@ def readSubnet():
         except:
             print("Invalid Subnet!")
 
+
 def getIP():
     try:
         ip = socket.gethostbyname(socket.gethostname())
@@ -28,6 +30,7 @@ def getIP():
 
     except:
         print("Unable to get Machine IP. Are you connected to the internet?")
+
 
 if __name__ == '__main__':
     menu.startMenu()

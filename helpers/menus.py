@@ -27,7 +27,6 @@ def startMenu():
     """)
 
 
-
 def hostDiscoveryMethods():
     print("""
         Please Chose a Host Disovery method:
@@ -37,6 +36,7 @@ def hostDiscoveryMethods():
         3. Custom Scan
     
     """)
+
 
 def hostDiscovEvasionTech():
     print("""
@@ -66,6 +66,7 @@ def timingOptions():
         
     """)
 
+
 def processAnimation(process):
     i = 0
     animation_string = "|/-\\"
@@ -74,7 +75,6 @@ def processAnimation(process):
         sys.stdout.write("\r" + animation_string[i % len(animation_string)])
         sys.stdout.flush()
         i += 1
-
 
 
 def readInt():
