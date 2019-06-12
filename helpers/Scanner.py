@@ -1,8 +1,8 @@
 import datetime
 import random
 import subprocess
-import menus
-from nmapXMLParser import nmapXMLParser as Parser
+from helpers import menus
+from helpers.nmapXMLParser import nmapXMLParser as Parser
 
 
 # Host Discovery Techniques https://nmap.org/book/host-discovery-strategies.html

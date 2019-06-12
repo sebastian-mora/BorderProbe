@@ -1,7 +1,6 @@
 import ipaddress
-import menus as menu
-from Scanner import Scanner
-import Report
+from helpers import menus as menu, Report
+from helpers.Scanner import Scanner
 
 
 def readSubnet():
