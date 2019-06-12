@@ -245,7 +245,10 @@ class Scanner:
         :return: append results to XML Scan file
         """
 
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000', '--script-timeout', '20', '-iL', live_hosts_file]
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000', '--script-timeout', '20', '-iL', live_hosts_file]
+        flags = ['--randomize-hosts', '-n', '-Pn',  '--top-ports', '100', '--script-timeout', '20', '-iL',
+                 live_hosts_file]
+
 
         if self.evasion_used:
             flags.extend(self.evasion_used)

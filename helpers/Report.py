@@ -4,18 +4,20 @@ import xmltodict
 
 class Report:
 
-    def __init__(self, xml_file_name):
+    def __init__(self, xml_file_name, subnets, attacker_ip):
 
         """
 
         :param scan_data: Python dic
         """
+        self.attacker_ip = attacker_ip
         self.scan_data = self.openXML(xml_file_name)
         self.table_template = self.getBS('output/template/table_temp.html')
         self.report = self.getBS('output/template/report.html')
         self.save_path = xml_file_name.split('/')[xml_file_name.index("output") + 1]
-
+        self.subnets = subnets
         self.generateReport(self.save_path)
+
 
     def getBS(self, filename):
         with open(filename)as f:
@@ -28,17 +30,24 @@ class Report:
         return xml_doc
     def generateReport(self, file_path):
 
+        self.report.find(id='cidr_ranges').string = ''.join(self.subnets)
+
+        for ip in self.report.findAll('span', class_='target'):
+            ip.string = self.subnets
+
+        self.report.find(id='attacker').string = self.attacker_ip
+
         try:
             hosts = self.scan_data['nmaprun']["host"]
 
             if isinstance(hosts, dict):
-                table = self.generateTable(hosts)
-                self.report.find(id="reports").append(table)
+                table = self.generateScreenShotTable(hosts)
+                self.report.find(id="hosts").append(table)
             else:
                 for host in hosts:
                     if host["status"]["@state"] == "up":
-                        table = self.generateTable(host)
-                        self.report.find(id="reports").append(table)
+                        table = self.generateScreenShotTable(host)
+                        self.report.find(id="hosts").append(table)
 
             self.saveReport(file_path)
 
@@ -79,7 +88,7 @@ class Report:
 
 
 
-    def generateTable(self, host):
+    def generateScreenShotTable(self, host):
 
         table = copy.copy(self.table_template)
 
@@ -87,14 +96,14 @@ class Report:
         open_ports  = self.getOpenPorts(host)
         os_detected = self.getTopOS(host)
 
-        for target in table.findAll('span', class_='target'):
-            target.string = target_ip
+        table.find(id='host_ip').string = target_ip
+
 
         #TODO FAILED HERE
         for port in open_ports:
             li_new_tag = table.new_tag('li')
             li_new_tag.string = port
-            table.find(id='open-ports').append(li_new_tag)
+            table.find(id='open_ports').append(li_new_tag)
 
         count = 0
         for os in os_detected:
@@ -106,3 +115,5 @@ class Report:
             count += 1
 
         return table
+
+

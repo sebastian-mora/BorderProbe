@@ -1,7 +1,7 @@
 <html>
     <head>
             <style>
-                body {
+                               body {
                         font-family: "Times New Roman";
 
                     }
@@ -37,6 +37,16 @@
                         vertical-align: top;
 
                     }
+
+                    #hosts {
+                        width: 50%;
+                        height: 50%;
+                    }
+
+
+                    #hosts td {
+                        white-space: nowrap;
+                    }
             </style>
     </head>
 
@@ -50,7 +60,7 @@
                 addresses defined within the Scope of Work for the engagement from a non
                 -
                 PCI campus network
-                segment. The XX.XXX.XX/24 network environment defined within the Scope of Work lack segmentation
+                segment. The <span class="target"> </span> network environment defined within the Scope of Work lack segmentation
                 from n
                 etwork connections originating from a non
                 -
@@ -73,10 +83,7 @@
                     <th>CIDR Ranges</th>
                 </tr>
                 <tr>
-                    <td>
-                    XXXXXXXX/24
-                    XXXXXXX/16
-                    XXXXXXXX/24
+                    <td id="cidr_ranges">
                     </td>
                 </tr>
             </table>
@@ -86,6 +93,54 @@
 
 
         <div id="reports">
+            <div>
+    <table border="1" id="report">
+        <tr>
+            <th>Risk Rating</th>
+            <th id='risk'>Critical</th>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td id="description">
+                An IPv4 network ranges defined within the Scope of Work as a target
+                network range for segmentation
+                testing <span class="target">(X.X.X.X/24) </span> can be reached from the BHN PLS campus network segment
+                <span id="attacker">(X.X.X.X/24) </span>
+            </td>
+        </tr>
+        <tr>
+            <th>Recommendation</th>
+            <td>
+                Ensure proper segmentation procedures are implemented to prevent campus network clients from
+                connecting to
+                privileged network segments
+            </td>
+        </tr>
+        <tr>
+            <th>Affected {URLs / IP Addresses / Hosts / User Accounts}</th>
+            <td><span class="target">(X.X.X.X/24) </span></td>
+        </tr>
+        <tr>
+            <th>References</th>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <th>Notes</th>
+            <td></td>
+        </tr>
+        <tr>
+            <th>Screenshots</th>
+            <td>
+
+
+                <div id="hosts">
+
+                </div>
+
+            </td>
+        </tr>
+    </table>
+</div>
 
         </div>
 
