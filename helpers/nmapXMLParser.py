@@ -59,7 +59,7 @@ class nmapXMLParser:
 
         if self.main_doc is not None:
             date = datetime.datetime.now()
-            filename = date.strftime('output/%d_%X_LiveHosts.Xml')
+            filename = date.strftime('output/%X/LiveHosts.Xml')
             f = open(filename, 'w')
 
             f.writelines(xmltodict.unparse(self.main_doc))

@@ -41,11 +41,13 @@ if __name__ == '__main__':
 
         elif choice == 2:
             live_hosts = scan.hostIpPing(subnet)
-            scan.phaseTwoScan(live_hosts)
+            xml_data = scan.phaseTwoScan(live_hosts)
+            Report.Report(xml_data)
 
         elif choice == 3:
             live_hosts = scan.hostCustomScan(subnet)
-            scan.phaseTwoScan(live_hosts)
+            xml_data = scan.phaseTwoScan(live_hosts)
+            Report.Report(xml_data)
 
         else:
             print("Invalid Input")

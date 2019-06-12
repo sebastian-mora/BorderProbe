@@ -3,6 +3,7 @@ import random
 import subprocess
 from helpers import menus
 from helpers.nmapXMLParser import nmapXMLParser as Parser
+import os
 
 
 # Host Discovery Techniques https://nmap.org/book/host-discovery-strategies.html
@@ -72,7 +73,9 @@ class Scanner:
 
     def saveLiveHosts(self, live_hosts):
         date = datetime.datetime.now()
-        filename = date.strftime('output/%d_%X_LiveHosts.txt')
+        os.mkdir(date.strftime('output/%X'))
+        filename = date.strftime('output/'
+                                 '%X/LiveHosts.txt')
         f = open(filename, 'w')
 
         for host in live_hosts:
@@ -242,13 +245,13 @@ class Scanner:
         :return: append results to XML Scan file
         """
 
-        flags = ['--randomize-hosts', '-n', '-Pn', '-A', '-sV', '--top-ports', '1000', '-iL', live_hosts_file]
+        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000', '--script-timeout', '20', '-iL', live_hosts_file]
 
         if self.evasion_used:
             flags.extend(self.evasion_used)
 
-        date = datetime.datetime.now()
-        filename = date.strftime('%d_%X_Scan_Results.xml')
+        folder = live_hosts_file.split('/')[live_hosts_file.index("output") + 1]
+        filename = 'output/%s/Scan_Results.xml' % folder
 
         xml_data = self.executeNmapCommand(flags, filename)
 

@@ -13,8 +13,9 @@ class Report:
         self.scan_data = self.openXML(xml_file_name)
         self.table_template = self.getBS('output/template/table_temp.html')
         self.report = self.getBS('output/template/report.html')
+        self.save_path = xml_file_name.split('/')[xml_file_name.index("output") + 1]
 
-        self.generateReport()
+        self.generateReport(self.save_path)
 
     def getBS(self, filename):
         with open(filename)as f:
@@ -25,7 +26,7 @@ class Report:
         with open(filename) as fd:
             xml_doc = xmltodict.parse(fd.read())
         return xml_doc
-    def generateReport(self):
+    def generateReport(self, file_path):
 
         try:
             hosts = self.scan_data['nmaprun']["host"]
@@ -39,15 +40,16 @@ class Report:
                         table = self.generateTable(host)
                         self.report.find(id="reports").append(table)
 
-            self.saveReport()
+            self.saveReport(file_path)
 
 
         except:
             print("No Hosts in this file")
             return None
 
-    def saveReport(self):
-        with open("output/report.html", "w") as file:
+    def saveReport(self, output_folder):
+        path = "output/%s/report.html" % output_folder
+        with open(path, "w") as file:
             file.write(str(self.report))
 
 
@@ -94,19 +96,13 @@ class Report:
             li_new_tag.string = port
             table.find(id='open-ports').append(li_new_tag)
 
+        count = 0
         for os in os_detected:
+            if count == 3:
+                break
             li_new_tag = table.new_tag('li')
             li_new_tag.string = os
             table.find(id='os_detection').append(li_new_tag)
+            count += 1
 
         return table
-
-
-
-
-
-
-
-
-
-
