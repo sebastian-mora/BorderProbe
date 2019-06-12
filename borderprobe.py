@@ -61,3 +61,10 @@ if __name__ == '__main__':
 
         else:
             print("Invalid Input")
+
+    elif choice == 2:
+        pass
+
+
+    else:
+        print("Invalid Input")
