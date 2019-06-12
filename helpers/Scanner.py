@@ -233,7 +233,7 @@ class Scanner:
         file_name = self.saveLiveHosts(live_hosts)
         return file_name
 
-    # TODO Stage 2 Port Scan
+
     def phaseTwoScan(self, live_hosts_file):
 
         """
@@ -288,7 +288,6 @@ class Scanner:
         print("Scan Complete for: %s" % flags[len(flags) - 1])
         stdout, stderr = p.communicate()
 
-        # TODO BASIC BUT WORKS
         if "QUITTING" in str(stderr):
             print('\n' + str(stderr))
 

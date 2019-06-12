@@ -97,7 +97,7 @@ class Report:
 
         table.find(id='host_ip').string = target_ip
 
-        # TODO FAILED HERE
+
         for port in open_ports:
             li_new_tag = table.new_tag('li')
             li_new_tag.string = port
