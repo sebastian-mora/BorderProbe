@@ -46,7 +46,7 @@ class Report:
 
         report_num = 0
         for subnet in self.subnets:
-            subnet_table = self.generateSubnetTable(subnet,report_num)
+            subnet_table = self.generateSubnetTable(subnet, report_num)
             report_num += 1
             self.report.find(id='subnet_reports').append(subnet_table)
 
@@ -93,13 +93,13 @@ class Report:
         open_ports = self.getOpenPorts(host)
         os_detected = self.getTopOS(host)
 
-        table.find(id='host_ip').string = target_ip
+        table.find(class_='host_ip').string = target_ip
 
 
         for port in open_ports:
             li_new_tag = table.new_tag('li')
             li_new_tag.string = port
-            table.find(id='open_ports').append(li_new_tag)
+            table.find(class_='open_ports').append(li_new_tag)
 
         count = 0
         for os in os_detected:
@@ -107,7 +107,7 @@ class Report:
                 break
             li_new_tag = table.new_tag('li')
             li_new_tag.string = os
-            table.find(id='os_detection').append(li_new_tag)
+            table.find(class_='os_detection').append(li_new_tag)
             count += 1
 
         return table
@@ -120,19 +120,19 @@ class Report:
         for ip in subnet_table.findAll('span', class_='target'):
             ip.string = subnet.compressed
 
-        subnet_table.find(id='attacker').string = self.attacker_ip
+        subnet_table.find(class_='attacker').string = self.attacker_ip
 
         try:
             hosts = self.scan_data[report_num]['nmaprun']["host"]
 
             if isinstance(hosts, dict):
                 table = self.generateScreenShotTable(hosts)
-                subnet_table.find(id="hosts").append(table)
+                subnet_table.find(class_="hosts").append(table)
             else:
                 for host in hosts:
                     if host["status"]["@state"] == "up":
                         table = self.generateScreenShotTable(host)
-                        subnet_table.find(id="hosts").append(table)
+                        subnet_table.find(class_="hosts").append(table)
 
             return subnet_table
 
