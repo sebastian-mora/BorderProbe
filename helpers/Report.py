@@ -32,31 +32,31 @@ class Report:
 
     def generateReport(self, file_path):
 
-        self.report.find(id='cidr_ranges').string = ''.join(self.subnets)
+        for subnet in self.subnets:
 
-        for ip in self.report.findAll('span', class_='target'):
-            ip.string = self.subnets
+            self.report.find(id='cidr_ranges').string = ''.join(subnet)
 
-        self.report.find(id='attacker').string = self.attacker_ip
+            for ip in self.report.findAll('span', class_='target'):
+                ip.string = subnet
 
-        try:
-            hosts = self.scan_data['nmaprun']["host"]
+            self.report.find(id='attacker').string = self.attacker_ip
 
-            if isinstance(hosts, dict):
-                table = self.generateScreenShotTable(hosts)
-                self.report.find(id="hosts").append(table)
-            else:
-                for host in hosts:
-                    if host["status"]["@state"] == "up":
-                        table = self.generateScreenShotTable(host)
-                        self.report.find(id="hosts").append(table)
+            try:
+                hosts = self.scan_data['nmaprun']["host"]
 
-            self.saveReport(file_path)
+                if isinstance(hosts, dict):
+                    table = self.generateScreenShotTable(hosts)
+                    self.report.find(id="hosts").append(table)
+                else:
+                    for host in hosts:
+                        if host["status"]["@state"] == "up":
+                            table = self.generateScreenShotTable(host)
+                            self.report.find(id="hosts").append(table)
+            except:
+                print("No Hosts in this file")
+                return None
 
-
-        except:
-            print("No Hosts in this file")
-            return None
+        self.saveReport(file_path)
 
     def saveReport(self, output_folder):
         path = "output/%s/report.html" % output_folder

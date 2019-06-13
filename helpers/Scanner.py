@@ -11,7 +11,7 @@ from helpers.nmapXMLParser import nmapXMLParser as Parser
 
 class Scanner:
 
-    def __init__(self, subnet):
+    def __init__(self):
 
         self.evasionOptions = {
             1: '',
@@ -72,12 +72,13 @@ class Scanner:
         flags = ['-S', ip]
         return flags
 
-    def saveLiveHosts(self, live_hosts):
-        date = datetime.datetime.now()
-        os.mkdir(date.strftime('output/%X'))
-        filename = date.strftime('output/'
-                                 '%X/LiveHosts.txt')
-        f = open(filename, 'w')
+    def saveLiveHosts(self, live_hosts, foldername):
+
+        if os.path.isdir('output/%s' % foldername) is not True:
+            os.mkdir('output/%s' % foldername)
+
+        filename = 'output/%s/LiveHosts.txt' % foldername
+        f = open(filename, 'a+')
 
         for host in live_hosts:
             f.write("%s\n" % str(host))
@@ -150,87 +151,45 @@ class Scanner:
 
         return flag_list
 
-    def hostPingScan(self, subnet):
+    def hostScan(self, subnets, scan_selector):
         # nmap -sn subnet
 
         """
         Uses ping only scan and saves result to txt file
 
-        :param subnet: Full Subnet range
+        :param subnets: Full Subnet range
+        :param scan_selector: Selects type of nmap scan
         :return: File name
         """
+
+        scan_type = {
+            1: ['-sn', '-PE', '-R', "-n"], #Ping Scan
+            2: ['-n', '-sn', '--send-ip'], #Ip Scan
+            3: ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389'].extend(self.evasionTechniques())
+        }
+
+        flags = scan_type[scan_selector]
 
         parser = Parser()
 
         live_hosts = []
+        folder_name = datetime.datetime.now().strftime('%X')
+        file_name = NameError
 
-        for subnet in self.randomizeSubnetOrder(subnet):
-            result = self.executeNmapCommand(['-sn', '-PE', '-R', "-n", str(subnet)])
-            result = parser.getLiveHosts(result)
+        for subnet in subnets:
+            subnet = self.divideSubnet(subnet)
 
-            if result:
-                live_hosts.extend(result)
+            for random_subnet in self.randomizeSubnetOrder(subnet):
+                flags = flags.extend(str(random_subnet))
+                result = self.executeNmapCommand(flags)
+                result = parser.getLiveHosts(result)
 
-        file_name = self.saveLiveHosts(live_hosts)
-        return file_name
+                if result:
+                    live_hosts.extend(result)
 
-    def hostIpPing(self, subnet):
-        # namp -n -sn --send-ip 192.168.33.37
+            file_name = self.saveLiveHosts(live_hosts, folder_name)
+            live_hosts = []
 
-        """
-        Uses ping only scan and saves result to txt file
-
-        :param subnet: Full Subnet range
-        :return: File name
-        """
-
-        scan_flags = ['-n', '-sn', '--send-ip']
-        parser = Parser()
-
-        live_hosts = []
-        for subnet in self.randomizeSubnetOrder(subnet):
-            command = list(scan_flags)
-            command.append(str(subnet))
-            result = self.executeNmapCommand(command)
-            result = parser.getLiveHosts(result)
-
-            if result:
-                live_hosts.extend(result)
-
-        file_name = self.saveLiveHosts(live_hosts)
-        return file_name
-
-    def hostCustomScan(self, subnet):
-
-        """
-        Uses ping only scan and saves result to txt file
-
-        :param subnet: Full Subnet range
-        :return: File name
-        """
-
-        # nmap -sn (no port) -PS22-25,80,3389 (SYN on common ports) -PA22-25,80,3389 (ACK on common ports) subnet
-        # Check for SSH, Telnet, Ftp, RPC, Http, 445 (SMB), 135 (RPC), 139 (smb), 88 (Kerberos),
-
-        port_check_flags = ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389']
-
-        parser = Parser()
-
-        flags = self.evasionTechniques()
-
-        live_hosts = []
-
-        for subnet in self.randomizeSubnetOrder(subnet):
-            flag_list = list(flags)
-            flag_list.extend(port_check_flags)
-            flag_list.append(str(subnet))
-            result = self.executeNmapCommand(flag_list)
-            result = parser.getLiveHosts(result)
-
-            if result:
-                live_hosts.extend(result)
-
-        file_name = self.saveLiveHosts(live_hosts)
         return file_name
 
 

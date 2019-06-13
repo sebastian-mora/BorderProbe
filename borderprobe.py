@@ -36,38 +36,40 @@ if __name__ == '__main__':
     menu.startMenu()
 
     choice = menu.readInt()
+    scan = Scanner()
+
+
+    ip = getIP()
 
     if choice == 1:
 
         subnet = readSubnet()
-        scan = Scanner(subnet)
+        subnet_str = [str(subnet)]
 
-        subnet_str = str(subnet)
-        ip = getIP()
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
-        if choice == 1:
-            live_hosts_file = scan.hostPingScan(subnet)
-            xml_data = scan.phaseTwoScan(live_hosts_file)
-            Report.Report(xml_data, subnet_str, ip)
+        live_hosts_file = scan.hostScan(subnet, choice)
+        xml_data = scan.phaseTwoScan(live_hosts_file)
+        Report.Report(xml_data, subnet_str, ip)
 
-        elif choice == 2:
-            live_hosts = scan.hostIpPing(subnet)
-            xml_data = scan.phaseTwoScan(live_hosts)
-            Report.Report(xml_data, subnet_str, ip)
-
-        elif choice == 3:
-            live_hosts = scan.hostCustomScan(subnet)
-            xml_data = scan.phaseTwoScan(live_hosts)
-            Report.Report(xml_data, subnet_str, ip)
-
-        else:
-            print("Invalid Input")
 
     elif choice == 2:
-        pass
+
+        filepath = input("Please Enter Path to file")
+        subnets = []
+
+        with open(filepath)as fd:
+            subnets = [line.rstrip('\n') for line in fd]
+
+        subnets = [ipaddress.ip_network(subnet, strict=False) for subnet in subnets]
+
+        # TODO add scan types
+        live_hosts_file = scan.hostScan(subnets, 1)
+        xml_data = scan.phaseTwoScan(live_hosts_file)
+        Report.Report(xml_data, subnets, ip)
 
 
-    else:
+
+else:
         print("Invalid Input")
