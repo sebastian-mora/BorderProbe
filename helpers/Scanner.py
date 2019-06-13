@@ -44,7 +44,6 @@ class Scanner:
         :param ipv4_subnet:
         :return: list[IPv4sNetworks]
         """
-        subnet_string = str(ipv4_subnet)
         prefix_len = ipv4_subnet.prefixlen
         print(prefix_len)
 
@@ -217,7 +216,7 @@ class Scanner:
         #           '--script-timeout', '20', '-iL', live_hosts_file]
 
         flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
-
+        saved_files = []
         if self.evasion_used:
             flags.extend(self.evasion_used)
 
@@ -226,9 +225,10 @@ class Scanner:
             ips = ' '.join(host_dic[subnet])
             filename = 'output/%s/Scan_Results(%d).xml' % (self.folder, count)
             self.executeNmapCommand(flags, ips, filename)
+            saved_files.append(filename)
             count += 1
 
-        return filename
+        return saved_files
 
     # TODO Make method read from host file and start process for subnets
 
