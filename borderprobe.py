@@ -43,14 +43,14 @@ if __name__ == '__main__':
     if choice == 1:
 
         subnet = readSubnet()
-        subnet_str = [str(subnet)]
+
 
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
         host_dic = scan.hostScan(subnet, choice)
         xml_data = scan.phaseTwoScan(host_dic)
-        Report.Report(xml_data, subnet_str, ip)
+        Report.Report(xml_data, subnet, ip)
 
     elif choice == 2:
 
@@ -58,6 +58,7 @@ if __name__ == '__main__':
 
         with open(filepath)as fd:
             subnets = [line.rstrip('\n') for line in fd]
+        fd.close()
 
         subnets = [ipaddress.ip_network(subnet, strict=False) for subnet in subnets]
 

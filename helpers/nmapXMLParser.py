@@ -86,7 +86,7 @@ class nmapXMLParser:
                 hosts = data['nmaprun']['host']
                 live_hosts = []
                 for host in hosts:
-                    live_hosts.append(host['address'['@addr']])
+                    live_hosts.append(host['address']['@addr'])
 
                 return live_hosts
 
