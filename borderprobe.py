@@ -48,15 +48,13 @@ if __name__ == '__main__':
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
-        live_hosts_file = scan.hostScan(subnet, choice)
-        xml_data = scan.phaseTwoScan(live_hosts_file)
+        host_dic = scan.hostScan(subnet, choice)
+        xml_data = scan.phaseTwoScan(host_dic)
         Report.Report(xml_data, subnet_str, ip)
-
 
     elif choice == 2:
 
         filepath = input("Please Enter Path to file")
-        subnets = []
 
         with open(filepath)as fd:
             subnets = [line.rstrip('\n') for line in fd]
@@ -65,6 +63,8 @@ if __name__ == '__main__':
 
         # TODO add scan types
         live_hosts_file = scan.hostScan(subnets, 1)
+
+        #  TODO make phaseTwoScan return list of xml files
         xml_data = scan.phaseTwoScan(live_hosts_file)
         Report.Report(xml_data, subnets, ip)
 

@@ -25,6 +25,8 @@ class Scanner:
 
         self.evasion_used = []
 
+        self.folder = None
+
     def randomizeSubnetOrder(self, subnets):
         """
         Takes the subnet list and shuffles the items
@@ -43,7 +45,7 @@ class Scanner:
         :return: list[IPv4sNetworks]
         """
         subnet_string = str(ipv4_subnet)
-        prefix_len = int(subnet_string[subnet_string.index('/') + 1:])
+        prefix_len = ipv4_subnet.prefixlen
         print(prefix_len)
 
         if prefix_len < 24:
@@ -72,7 +74,7 @@ class Scanner:
         flags = ['-S', ip]
         return flags
 
-    def saveLiveHosts(self, live_hosts, foldername):
+    def saveLiveHosts(self, live_hosts, subnet, foldername):
 
         if os.path.isdir('output/%s' % foldername) is not True:
             os.mkdir('output/%s' % foldername)
@@ -81,7 +83,7 @@ class Scanner:
         f = open(filename, 'a+')
 
         for host in live_hosts:
-            f.write("%s\n" % str(host))
+            f.write("%s,%s\n" % (str(host), subnet))
         f.close()
         return filename
 
@@ -159,44 +161,48 @@ class Scanner:
 
         :param subnets: Full Subnet range
         :param scan_selector: Selects type of nmap scan
-        :return: File name
+        :return: Dic {subnet: [found_host ip]}
         """
 
         scan_type = {
-            1: ['-sn', '-PE', '-R', "-n"],  # Ping Scan
-            2: ['-n', '-sn', '--send-ip'],  # Ip Scan
-            3: ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389']  # Custom Scan
+            1: ['-sn', '-PE', '-R', "-n", '-iL', '-'],  # Ping Scan
+            2: ['-n', '-sn', '--send-ip', '-iL', '-'],  # Ip Scan
+            3: ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389', '-iL', '-']  # Custom Scan
         }
 
+
+
         flags = scan_type[scan_selector]
+
+        hosts = {}
 
         if scan_selector == 3:
             flags.extend(self.evasionTechniques())
 
         parser = Parser()
 
-        live_hosts = []
+        found_hosts = []
         folder_name = datetime.datetime.now().strftime('%X')
-        file_name = NameError
+        self.folder = folder_name
 
         for subnet in subnets:
-            subnet = self.divideSubnet(subnet)
+            subnet_div = self.divideSubnet(subnet)
 
-            for random_subnet in self.randomizeSubnetOrder(subnet):
-                flags.append(str(random_subnet))
-                result = self.executeNmapCommand(flags)
+            for random_subnet in self.randomizeSubnetOrder(subnet_div):
+                result = self.executeNmapCommand(flags, random_subnet.compressed)
                 result = parser.getLiveHosts(result)
 
                 if result:
-                    live_hosts.extend(result)
+                    found_hosts.extend(result)
 
-            file_name = self.saveLiveHosts(live_hosts, folder_name)
-            live_hosts = []
+            self.saveLiveHosts(found_hosts, random_subnet.compressed, folder_name)
+            hosts[subnet.compressed] = found_hosts
+            found_hosts = []
 
-        return file_name
+        return hosts
 
 
-    def phaseTwoScan(self, live_hosts_file):
+    def phaseTwoScan(self, host_dic):
 
         """
             Using the list of live host from the first scan
@@ -204,25 +210,31 @@ class Scanner:
             flags (--randomize-hosts -n -Pn -A -sSVC (Phase 1 Evasion) --top-ports 1000 -iL filename-of-live-hosts.txt )
             *Any evasion Methods used in Phase one will also be applied
 
-        :param live_hosts_file: Txt file will be passed to Nmap to scan
-        :return: append results to XML Scan file
+        :param host_dic: {subnet: [found_host ip]}
+        :return: [xml_file, .. ]
         """
+        # flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+        #           '--script-timeout', '20', '-iL', live_hosts_file]
 
-        # flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000', '--script-timeout', '20', '-iL', live_hosts_file]
-        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL',
-                 live_hosts_file]
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         if self.evasion_used:
             flags.extend(self.evasion_used)
 
-        folder = live_hosts_file.split('/')[live_hosts_file.index("output") + 1]
-        filename = 'output/%s/Scan_Results.xml' % folder
-
-        self.executeNmapCommand(flags, filename)
+        count = 0
+        for subnet in host_dic:
+            ips = ' '.join(host_dic[subnet])
+            filename = 'output/%s/Scan_Results(%d).xml' % (self.folder, count)
+            self.executeNmapCommand(flags, ips, filename)
+            count += 1
 
         return filename
 
-    def executeNmapCommand(self, flags, file_name=None):
+    # TODO Make method read from host file and start process for subnets
+
+
+
+    def executeNmapCommand(self, flags, host_ips=None , file_name=None):
 
         """
         Execute an Nmap command.
@@ -230,25 +242,29 @@ class Scanner:
         :param flags: ex. ' -B -f -P22'
         :return: stdout
         """
-
+        flags = flags.copy()
         # adds the required flags to the start of the list
         flags.insert(0, "nmap")
         flags.insert(1, "-oX")
 
         if file_name:
             flags.insert(2, file_name)
+
         else:
             flags.insert(2, '-')
 
         print(flags)
 
         # Starts the Nmap Process
-        p = subprocess.Popen(flags, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        stdout, stderr = p.communicate(input=host_ips.encode())
+
 
         menus.processAnimation(p)
 
         print("Scan Complete for: %s" % flags[len(flags) - 1])
-        stdout, stderr = p.communicate()
+
 
         if "QUITTING" in str(stderr):
             print('\n' + str(stderr))
