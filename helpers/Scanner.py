@@ -163,12 +163,15 @@ class Scanner:
         """
 
         scan_type = {
-            1: ['-sn', '-PE', '-R', "-n"], #Ping Scan
-            2: ['-n', '-sn', '--send-ip'], #Ip Scan
-            3: ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389'].extend(self.evasionTechniques())
+            1: ['-sn', '-PE', '-R', "-n"],  # Ping Scan
+            2: ['-n', '-sn', '--send-ip'],  # Ip Scan
+            3: ['-sn', '-PS22-25,80,3389', '-PA22-25,80,3389']  # Custom Scan
         }
 
         flags = scan_type[scan_selector]
+
+        if scan_selector == 3:
+            flags.extend(self.evasionTechniques())
 
         parser = Parser()
 
@@ -180,7 +183,7 @@ class Scanner:
             subnet = self.divideSubnet(subnet)
 
             for random_subnet in self.randomizeSubnetOrder(subnet):
-                flags = flags.extend(str(random_subnet))
+                flags.append(str(random_subnet))
                 result = self.executeNmapCommand(flags)
                 result = parser.getLiveHosts(result)
 
@@ -215,7 +218,7 @@ class Scanner:
         folder = live_hosts_file.split('/')[live_hosts_file.index("output") + 1]
         filename = 'output/%s/Scan_Results.xml' % folder
 
-        xml_data = self.executeNmapCommand(flags, filename)
+        self.executeNmapCommand(flags, filename)
 
         return filename
 

@@ -17,7 +17,7 @@ def readSubnet():
         try:
 
             subnet = ipaddress.ip_network(subnet, strict=False)
-            return subnet
+            return [subnet]
 
         except:
             print("Invalid Subnet!")
@@ -37,7 +37,6 @@ if __name__ == '__main__':
 
     choice = menu.readInt()
     scan = Scanner()
-
 
     ip = getIP()
 
@@ -72,4 +71,4 @@ if __name__ == '__main__':
 
 
 else:
-        print("Invalid Input")
+    print("Invalid Input")
