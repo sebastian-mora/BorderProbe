@@ -12,7 +12,6 @@
 
 ### Automated Network Segmentation Tester
  ___
- 
  ####Description
  
  This tool automates subnet segmentation testing. The tool operates in three
