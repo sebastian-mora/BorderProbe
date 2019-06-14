@@ -119,7 +119,7 @@ class Report:
         for ip in subnet_table.findAll('span', class_='target'):
             ip.string = subnet.compressed
 
-        subnet_table.find(class_='attacker').string = self.attacker_ip
+        #subnet_table.find(class_='attacker').string = self.attacker_ip
 
         #  For all found hosts generate a table for them and insert them into "ScreenShots"
         try:
