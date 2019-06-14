@@ -64,7 +64,7 @@ class nmapXMLParser:
 
             f.writelines(xmltodict.unparse(self.main_doc))
 
-    def getXmlAsDic(self, xml_string):
+    def getXmlAsDic(self):
         return self.main_doc
 
     def getLiveHosts(self, xml_string):

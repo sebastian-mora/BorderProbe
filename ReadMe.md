@@ -26,9 +26,5 @@
 
 [x] Phase 2 (Port Scan on Discovered Hosts)
 
-[X] Phase 3 Generate Report
+[X] Phase 3 Generate HTML Report 
 
-#####Features TBD
-___
-
-[ ] Allow user to use a list of subnets

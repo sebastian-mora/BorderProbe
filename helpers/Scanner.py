@@ -78,7 +78,7 @@ class Scanner:
         if os.path.isdir('output/%s' % foldername) is not True:
             os.mkdir('output/%s' % foldername)
 
-        filename = 'output/%s/LiveHosts.txt' % foldername
+        filename = 'output/%s/LiveHosts.csv' % foldername
         f = open(filename, 'a+')
 
         for host in live_hosts:

@@ -50,10 +50,6 @@ class Report:
             report_num += 1
             self.report.find(id='subnet_reports').append(subnet_table)
 
-
-
-
-
         self.saveReport(file_path)
 
     def saveReport(self, output_folder):
@@ -95,7 +91,6 @@ class Report:
 
         table.find(class_='host_ip').string = target_ip
 
-
         for port in open_ports:
             li_new_tag = table.new_tag('li')
             li_new_tag.string = port
@@ -111,7 +106,6 @@ class Report:
             count += 1
 
         return table
-
 
     def generateSubnetTable(self, subnet, report_num):
 
