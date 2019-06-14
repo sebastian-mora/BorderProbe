@@ -29,9 +29,11 @@
 
 [X] Phase 3 Generate HTML Report 
 
+#### Formatting for "Scan Subnets from File"
+
 ---
 
-#### Formatting for "Scan Subnets from File"
+
 
 ```
 127.0.0.1/32
