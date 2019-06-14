@@ -6,9 +6,6 @@ import xmltodict
 from helpers import menus
 
 
-
-# Host Discovery Techniques https://nmap.org/book/host-discovery-strategies.html
-
 class Scanner:
 
     def __init__(self):

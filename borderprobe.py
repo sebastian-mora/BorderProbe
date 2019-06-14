@@ -8,15 +8,15 @@ from helpers.Scanner import Scanner
 def readSubnet():
     """
     Takes user subnet and validates
-    :return IPv4Network
+    :return [IPv4network]
     """
 
     while 1:
-        subnet = input("Enter Subnet (XXX:XXX:XXX:XXX/ZZ): ")
+        input_str = input("Enter Subnet (XXX:XXX:XXX:XXX/ZZ): ")
 
         try:
 
-            subnet = ipaddress.ip_network(subnet, strict=False)
+            subnet = ipaddress.ip_network(input_str, strict=False)
             return [subnet]
 
         except:
@@ -24,6 +24,11 @@ def readSubnet():
 
 
 def getIP():
+    """
+    Gets the users IP for the report
+    :return: str ip
+    """
+
     try:
         ip = socket.gethostbyname(socket.gethostname())
         return ip
@@ -33,6 +38,7 @@ def getIP():
 
 
 if __name__ == '__main__':
+
     menu.startMenu()
 
     choice = menu.readInt()
@@ -43,7 +49,6 @@ if __name__ == '__main__':
     if choice == 1:
 
         subnet = readSubnet()
-
 
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
@@ -62,14 +67,13 @@ if __name__ == '__main__':
 
         subnets = [ipaddress.ip_network(subnet, strict=False) for subnet in subnets]
 
-        # TODO add scan types
-        live_hosts_file = scan.hostScan(subnets, 1)
+        menu.hostDiscoveryMethods()
+        choice = menu.readInt()
 
-        #  TODO make phaseTwoScan return list of xml files
+        live_hosts_file = scan.hostScan(subnets, choice)
+
         xml_data = scan.phaseTwoScan(live_hosts_file)
         Report.Report(xml_data, subnets, ip)
-
-
 
 else:
     print("Invalid Input")
