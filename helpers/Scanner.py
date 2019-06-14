@@ -2,9 +2,9 @@ import datetime
 import os
 import random
 import subprocess
-
+import xmltodict
 from helpers import menus
-from helpers.nmapXMLParser import nmapXMLParser as Parser
+
 
 
 # Host Discovery Techniques https://nmap.org/book/host-discovery-strategies.html
@@ -104,27 +104,32 @@ class Scanner:
     def getLiveHosts(self, host_scan_results):
 
         """
-        Uses the complied Host Disovery scan to find live hosts
-        :return: list of host ips
+        Take Nmap xml output and return a list of Live host ips
+        :param xml_string:
+        :return: list(ipv4)
         """
-        live_hosts = []
+
+        data = xmltodict.parse(host_scan_results)
 
         try:
-            hosts = host_scan_results['nmaprun']["host"]
-            count = 0
+            hosts = data['nmaprun']["host"]
 
-            for host in hosts:
-                if host["status"]["@state"] == "up":
-                    print("Host %s is up!" % host["address"]["@addr"])
-                    live_hosts.append(host["address"]["@addr"])
-                    count += 1
+            if isinstance(hosts, dict):
+                ip = hosts['address']['@addr']
+                return [ip]
 
-            print("Number of Live Hosts discovered: %d" % count)
-            return live_hosts
+            else:
+                hosts = data['nmaprun']['host']
+                live_hosts = []
+                for host in hosts:
+                    live_hosts.append(host['address']['@addr'])
+
+                return live_hosts
+
 
         except:
-            print("No Hosts in this file")
             return None
+
 
     def evasionTechniques(self):
         """
@@ -178,7 +183,6 @@ class Scanner:
         if scan_selector == 3:
             flags.extend(self.evasionTechniques())
 
-        parser = Parser()
 
         found_hosts = []
         folder_name = datetime.datetime.now().strftime('%X')
@@ -189,7 +193,7 @@ class Scanner:
 
             for random_subnet in self.randomizeSubnetOrder(subnet_div):
                 result = self.executeNmapCommand(flags, random_subnet.compressed)
-                result = parser.getLiveHosts(result)
+                result = self.getLiveHosts(result)
 
                 if result:
                     found_hosts.extend(result)
