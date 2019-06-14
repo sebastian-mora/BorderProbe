@@ -12,7 +12,8 @@
 
 ### Automated Network Segmentation Tester
  ___
- ####Description
+ 
+ #### Description
  
  This tool automates subnet segmentation testing. The tool operates in three
  main phases. The first phase using a variety of Host discovery techniques as
@@ -30,7 +31,7 @@
 
 ---
 
-Formatting for "Scan Subnets from File"
+#### Formatting for "Scan Subnets from File"
 
 ```
 127.0.0.1/32
