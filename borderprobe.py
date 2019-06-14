@@ -59,11 +59,16 @@ if __name__ == '__main__':
 
     elif choice == 2:
 
-        filepath = input("Please Enter Path to file")
+        filepath = input("Please Enter Path to file: ")
 
-        with open(filepath)as fd:
-            subnets = [line.rstrip('\n') for line in fd]
-        fd.close()
+        try:
+            with open(filepath)as fd:
+                subnets = [line.rstrip('\n') for line in fd]
+            fd.close()
+
+        except FileNotFoundError:
+            print("File Not Found")
+            exit(1)
 
         subnets = [ipaddress.ip_network(subnet, strict=False) for subnet in subnets]
 
@@ -75,5 +80,5 @@ if __name__ == '__main__':
         xml_data = scan.phaseTwoScan(live_hosts_file)
         Report.Report(xml_data, subnets, ip)
 
-else:
-    print("Invalid Input")
+    else:
+        pass

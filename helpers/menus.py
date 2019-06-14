@@ -78,4 +78,7 @@ def processAnimation(process):
 
 
 def readInt():
-    return int(input("Please Enter a Number: "))
+    try:
+        return int(input("Please Enter a Number: "))
+    except ValueError:
+        print("Input not an Integer")
