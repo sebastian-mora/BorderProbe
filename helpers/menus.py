@@ -21,6 +21,8 @@ def startMenu():
     headerAsciiArt()
 
     print("""
+        RUN AS ROOT!
+        
         1. Scan Subnet
 
         2. Scan Subnets from File

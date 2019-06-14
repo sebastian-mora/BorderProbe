@@ -218,10 +218,12 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        # flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-        #           '--script-timeout', '20', '-iL', live_hosts_file]
+        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+                  '--script-timeout', '20', '-iL', '-']
 
-        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        #  flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        #  Testing flag. Does not require root
+
         saved_files = []
 
         if self.evasion_used:
