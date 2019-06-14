@@ -14,10 +14,11 @@
  ___
  
  ####Description
- This tool automates subnet segmentation scanning. The tool operates in three
+ 
+ This tool automates subnet segmentation testing. The tool operates in three
  main phases. The first phase using a variety of Host discovery techniques as
- well as firewall evasion and save the live hosts to a txt file. The second
- phase then uses those host to do an in-depth port/service scan. In phase 3 
+ well as firewall evasion and save the live hosts to a csv file. The second
+ phase then uses those hosts to do an in-depth port/service scan. In phase 3 
  the tool will auto generate an HTML finding report.
  ___
  
