@@ -209,12 +209,11 @@ class Scanner:
 
 
     def phaseTwoScan(self, host_dic):
-
         """
-            Using the dic of live host from the first scan
-            This method will do a deeper scan using the
-            flags (--randomize-hosts -n -Pn -A -sSVC (Phase 1 Evasion) --top-ports 1000 -iL -)
-            *Any evasion Methods used in Phase one will also be applied
+        Using the dic of live host from the first scan
+        This method will do a deeper scan using the
+        flags (--randomize-hosts -n -Pn -A -sSVC (Phase 1 Evasion) --top-ports 1000 -iL -)
+        *Any evasion Methods used in Phase one will also be applied
 
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
@@ -264,14 +263,12 @@ class Scanner:
 
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-
         stdout, stderr = p.communicate(input=host_ips.encode())
-
         menus.processAnimation(p)
 
-        print("Scan Complete for: %s" % host_ips)
+        # TODO add progress output
 
-        #  If nmap throws error print error and exit
+        # If nmap throws error print error and exit
         if "QUITTING" in str(stderr):
             print('\n' + str(stderr))
 
