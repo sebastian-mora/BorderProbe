@@ -23,7 +23,7 @@ def startMenu():
     print("""
         1. Scan Subnet
 
-        2. Scan Subnets from File (not implemented)
+        2. Scan Subnets from File
     """)
 
 
