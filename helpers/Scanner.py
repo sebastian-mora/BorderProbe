@@ -194,7 +194,7 @@ class Scanner:
 
             #  Shuffles the order in which the subnets are scanned
             for random_subnet in self.randomizeSubnetOrder(subnet_div):
-                result = self.executeNmapCommand(flags, random_subnet.compressed)
+                result = self.executeNmapCommand(flags, random_subnet.compressed ,random_subnet.compressed)
 
                 #  extract live hosts from xml data
                 result = self.getLiveHosts(result)
@@ -234,13 +234,13 @@ class Scanner:
         for subnet in host_dic:
             ips = ' '.join(host_dic[subnet])
             filename = 'output/%s/Scan_Results(%d).xml' % (self.folder, count)
-            self.executeNmapCommand(flags, ips, filename)
+            self.executeNmapCommand(flags, ips, subnet, filename)
             saved_files.append(filename)
             count += 1
 
         return saved_files
 
-    def executeNmapCommand(self, flags, host_ips, file_name=None):
+    def executeNmapCommand(self, flags, host_ips, subnet="", file_name=None):
 
         """
             Takes flags and ip list and pipe it into Nmap. The Nmap result is returned in XMl format
@@ -262,14 +262,13 @@ class Scanner:
         else:
             flags.insert(2, '-')
 
-        print(flags)
-
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate(input=host_ips.encode())
         menus.processAnimation(p)
 
-        # TODO add progress output
+        print("\nScanning subnet %s" % subnet)
+        print("using flags: %s\n" % flags)
 
         # If nmap throws error print error and exit
         if "QUITTING" in str(stderr):

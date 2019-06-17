@@ -22,6 +22,7 @@ def startMenu():
 
     print("""
         RUN AS ROOT!
+        For large subnet it is recommend that you use screen to run in background 
         
         1. Scan Subnet
 
