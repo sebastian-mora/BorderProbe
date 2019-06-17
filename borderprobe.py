@@ -41,7 +41,8 @@ if __name__ == '__main__':
     menu.startMenu()
 
     choice = menu.readInt()
-    scan = Scanner()
+    dir_name = str(input("Enter a project name: "))
+    scan = Scanner(dir_name)
 
     ip = getIP()
 

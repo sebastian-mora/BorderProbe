@@ -8,7 +8,7 @@ from helpers import menus
 
 class Scanner:
 
-    def __init__(self):
+    def __init__(self, dir_name):
 
         self.evasionOptions = {
             1: '',
@@ -22,7 +22,7 @@ class Scanner:
 
         self.evasion_used = []
 
-        self.folder = None
+        self.folder = dir_name
 
     def randomizeSubnetOrder(self, subnets):
         """
@@ -68,7 +68,7 @@ class Scanner:
         flags = ['-S', ip]
         return flags
 
-    def saveLiveHosts(self, live_hosts, subnet, foldername):
+    def saveLiveHosts(self, live_hosts, subnet):
 
         """
         Saves live hosts to a CSV
@@ -83,10 +83,10 @@ class Scanner:
         if os.path.isdir('output') is not True:
             os.mkdir('output')
 
-        if os.path.isdir('output/%s' % foldername) is not True:
-            os.mkdir('output/%s' % foldername)
+        if os.path.isdir('output/%s' % self.folder) is not True:
+            os.mkdir('output/%s' % self.folder)
 
-        filename = 'output/%s/LiveHosts.csv' % foldername
+        filename = 'output/%s/LiveHosts.csv' % self.folder
         f = open(filename, 'a+')
 
         for host in live_hosts:
@@ -184,13 +184,10 @@ class Scanner:
         flags = scan_type[scan_selector]
 
         hosts = {}
+        found_hosts = []
 
         if scan_selector == 3:
             flags.extend(self.evasionTechniques)
-
-        found_hosts = []
-        folder_name = datetime.datetime.now().strftime('%X')
-        self.folder = folder_name
 
         for subnet in subnets:
             subnet_div = self.divideSubnet(subnet)  # Divide subnet into more manageable chunks
@@ -205,7 +202,7 @@ class Scanner:
                 if result:
                     found_hosts.extend(result)
 
-            self.saveLiveHosts(found_hosts, random_subnet.compressed, folder_name)
+            self.saveLiveHosts(found_hosts, random_subnet.compressed)
             hosts[subnet.compressed] = found_hosts
             found_hosts = []
 
@@ -222,11 +219,11 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '-iL', '-']
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+               # '-iL', '-']
 
         #  Testing flag. Does not require root
-        #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         saved_files = []
 
