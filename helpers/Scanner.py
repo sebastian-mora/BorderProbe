@@ -80,6 +80,9 @@ class Scanner:
         :return:
         """
         #  If the folder does not exist make it
+        if os.path.isdir('output') is not True:
+            os.mkdir('output')
+
         if os.path.isdir('output/%s' % foldername) is not True:
             os.mkdir('output/%s' % foldername)
 
@@ -220,7 +223,7 @@ class Scanner:
         :return: [xml_file_name, ... ]
         """
         flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '--script-timeout', '20', '-iL', '-']
+                '-iL', '-']
 
         #  Testing flag. Does not require root
         #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
@@ -274,5 +277,6 @@ class Scanner:
         # If nmap throws error print error and exit
         if "QUITTING" in str(stderr):
             print('\n' + str(stderr))
+            exit(1)
 
         return stdout
