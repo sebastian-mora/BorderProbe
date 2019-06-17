@@ -105,7 +105,11 @@ class Report:
             return subnet_table
 
         except:
-            print("No Hosts in this file")
+            subnet_table.find(class_='risk').string = "N/A"
+            subnet_table.find(class_='recommendation').string = 'N/A'
+            subnet_table.find(class_='description').string = "No Hosts Found"
+
+
             return subnet_table
 
     def generateScreenShotTable(self, host):
