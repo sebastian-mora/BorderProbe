@@ -67,7 +67,8 @@ class Report:
             # Generates subnet table
             subnet_table = self.generateSubnetTable(subnet, self.scan_data[report_num])
             report_num += 1
-            self.report.find(id='subnet_reports').append(subnet_table)
+            if subnet_table:
+                self.report.find(id='subnet_reports').append(subnet_table)
 
         self.saveReport(file_path)
 
@@ -105,11 +106,7 @@ class Report:
             return subnet_table
 
         except KeyError:
-            subnet_table.find(class_='risk').string = "N/A"
-            subnet_table.find(class_='recommendation').string = 'N/A'
-            subnet_table.find(class_='description').string = "No Hosts Found"
-
-            return subnet_table
+            return None
 
     def generateScreenShotTable(self, host):
 
