@@ -131,8 +131,9 @@ class Scanner:
 
                 return live_hosts
 
-        except TypeError:
+        except KeyError:
             print("No Hosts Found")
+            return []
 
     def evasionTechniques(self):
         """

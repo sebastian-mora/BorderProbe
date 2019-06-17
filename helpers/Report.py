@@ -71,6 +71,43 @@ class Report:
 
         self.saveReport(file_path)
 
+    def generateSubnetTable(self, subnet, scan_results):
+
+        """
+        Generates Tables for each subnet
+        :param subnet:
+        :param scan_results: Results from Nmap scan as dic
+        :return:
+        """
+
+        subnet_table = copy.copy(self.subnet_table)
+
+        for ip in subnet_table.findAll('span', class_='target'):
+            ip.string = subnet.compressed
+
+        #  subnet_table.find(class_='attacker').string = self.attacker_ip
+
+        #  For all found hosts generate a table for them and insert them into "ScreenShots"
+
+
+        try:
+            hosts = scan_results['nmaprun']["host"]
+
+            if isinstance(hosts, dict):
+                table = self.generateScreenShotTable(hosts)
+                subnet_table.find(class_="hosts").append(table)
+            else:
+                for host in hosts:
+                    if host["status"]["@state"] == "up":
+                        table = self.generateScreenShotTable(host)
+                        subnet_table.find(class_="hosts").append(table)
+
+            return subnet_table
+
+        except:
+            print("No Hosts in this file")
+            return subnet_table
+
     def generateScreenShotTable(self, host):
 
         """
@@ -98,41 +135,6 @@ class Report:
             table.find(class_='os_detection').append(li_new_tag)
 
         return table
-
-    def generateSubnetTable(self, subnet, scan_results):
-
-        """
-        Generates Tables for each subnet
-        :param subnet:
-        :param scan_results: Results from Nmap scan as dic
-        :return:
-        """
-
-        subnet_table = copy.copy(self.subnet_table)
-
-        for ip in subnet_table.findAll('span', class_='target'):
-            ip.string = subnet.compressed
-
-        #  subnet_table.find(class_='attacker').string = self.attacker_ip
-
-        #  For all found hosts generate a table for them and insert them into "ScreenShots"
-        try:
-            hosts = scan_results['nmaprun']["host"]
-
-            if isinstance(hosts, dict):
-                table = self.generateScreenShotTable(hosts)
-                subnet_table.find(class_="hosts").append(table)
-            else:
-                for host in hosts:
-                    if host["status"]["@state"] == "up":
-                        table = self.generateScreenShotTable(host)
-                        subnet_table.find(class_="hosts").append(table)
-
-            return subnet_table
-
-        except:
-            print("No Hosts in this file")
-            return None
 
     def saveReport(self, output_folder):
         path = "output/%s/Final_Report.html" % output_folder
