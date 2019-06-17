@@ -46,3 +46,4 @@
   * Beautifulsoup4
   * Xmltodict
   * Nmap (installed on system)
+  * Python3
