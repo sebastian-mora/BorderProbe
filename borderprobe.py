@@ -1,5 +1,6 @@
 import ipaddress
 import socket
+import os
 
 from helpers import menus as menu, Report
 from helpers.Scanner import Scanner
@@ -35,13 +36,22 @@ def getIP():
     except OSError:
         print("Unable to get Machine IP. Are you connected to the internet?")
 
+def getProjectName():
+    while True:
+        dir_name = str(input("Enter a project name: "))
+        if os.path.isdir('output/' + dir_name) is True:
+            print("There is a project already with that name: %s" % dir_name)
+        else:
+            return dir_name
+
 
 if __name__ == '__main__':
 
     menu.startMenu()
 
     choice = menu.readInt()
-    dir_name = str(input("Enter a project name: "))
+    dir_name = getProjectName()
+
     scan = Scanner(dir_name)
 
     ip = getIP()
