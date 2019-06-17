@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     elif choice == 2:
 
-        filepath = input("Please Enter Path to subnet list: ")
+        filepath = input("Enter Path to subnet list: ")
 
         try:
             with open(filepath)as fd:

@@ -32,7 +32,7 @@ def startMenu():
 
 def hostDiscoveryMethods():
     print("""
-        Please Chose a Host Disovery method:
+        Chose a Host Disovery method:
         
         1. ICMP Only Scan 
         2. IP Protocol Ping
@@ -43,7 +43,7 @@ def hostDiscoveryMethods():
 
 def hostDiscovEvasionTech():
     print("""
-        Please chose one or more methods (1,2,3,...)
+        Chose one or more methods (1,2,3,...)
         
         1. No evasion
         2. Fragmentation (Root Required)
@@ -82,6 +82,6 @@ def processAnimation(process):
 
 def readInt():
     try:
-        return int(input("Please Enter a Number: "))
+        return int(input("Enter a Number: "))
     except ValueError:
         print("Input not an Integer")

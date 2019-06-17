@@ -52,19 +52,19 @@ class Scanner:
         return list(ipv4_subnet.subnets(prefixlen_diff=prefix_len, new_prefix=None))
 
     def getDecoys(self):
-        decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
+        decoys = input("Enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
         decoy_list = ["-D"]
         decoy_list.extend(decoys.split(","))
         return decoy_list
 
     def getTiming(self):
         menus.timingOptions()
-        num = input("Pleas enter a Number: ")
+        num = input("Enter a Number: ")
         timing = ['-T', str(num)]
         return timing
 
     def getSpoofIP(self):
-        ip = input("Please Enter Spoof IP: ")
+        ip = input("Enter Spoofed IP: ")
         flags = ['-S', ip]
         return flags
 
@@ -261,6 +261,7 @@ class Scanner:
 
         else:
             flags.insert(2, '-')
+
 
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
