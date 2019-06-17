@@ -79,7 +79,7 @@ class Scanner:
         :param foldername: to where the csv will be saved
         :return:
         """
-
+        #  If the folder does not exist make it
         if os.path.isdir('output/%s' % foldername) is not True:
             os.mkdir('output/%s' % foldername)
 
@@ -105,36 +105,34 @@ class Scanner:
 
         return flags
 
-    def getLiveHosts(self, host_scan_results):
+    def getLiveHosts(self, xml_string):
 
         """
         Take Nmap xml output and return a list of Live host ips
-        :param xml_string:
+        :param xml_string: Xml string
         :return: list(ipv4)
         """
-        #  Turns xml into dic
-        data = xmltodict.parse(host_scan_results)
 
         try:
+            #  Turns xml into dic
+            data = xmltodict.parse(xml_string)
             hosts = data['nmaprun']["host"]
 
             #  If only one host found result will be in dic not list
             if isinstance(hosts, dict):
                 ip = hosts['address']['@addr']
+
                 return [ip]
 
             else:
-                hosts = data['nmaprun']['host']
                 live_hosts = []
                 for host in hosts:
                     live_hosts.append(host['address']['@addr'])
 
                 return live_hosts
 
-
-        except:
-            return None
-
+        except TypeError:
+            print("No Hosts Found")
 
     def evasionTechniques(self):
         """
@@ -148,9 +146,11 @@ class Scanner:
         choice = list(map(int, choice.split(',')))
 
         for item in choice:
-            if item in self.evasionOptions:
-                if callable(self.evasionOptions[item]):
 
+            if item in self.evasionOptions:
+
+                #  If the option is a method execute it
+                if callable(self.evasionOptions[item]):
                     flag_list.extend(self.evasionOptions[item]())
 
                 else:
@@ -158,13 +158,13 @@ class Scanner:
             else:
                 print("Invalid choice: %s", item)
 
-        self.evasion_used = flag_list
+        self.evasion_used = flag_list   # Save the techniques used
 
         return flag_list
 
     def hostScan(self, subnets, scan_selector):
         """
-        Discovers lives host
+        Discovers lives host using Nmap
 
         :param subnets: list of all subnets to be scanned
         :param scan_selector: user chosen scan type
@@ -182,14 +182,14 @@ class Scanner:
         hosts = {}
 
         if scan_selector == 3:
-            flags.extend(self.evasionTechniques())
+            flags.extend(self.evasionTechniques)
 
         found_hosts = []
         folder_name = datetime.datetime.now().strftime('%X')
         self.folder = folder_name
 
         for subnet in subnets:
-            subnet_div = self.divideSubnet(subnet)
+            subnet_div = self.divideSubnet(subnet)  # Divide subnet into more manageable chunks
 
             #  Shuffles the order in which the subnets are scanned
             for random_subnet in self.randomizeSubnetOrder(subnet_div):
@@ -218,11 +218,11 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                  '--script-timeout', '20', '-iL', '-']
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+                  #'--script-timeout', '20', '-iL', '-']
 
-        #  flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
         #  Testing flag. Does not require root
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         saved_files = []
 

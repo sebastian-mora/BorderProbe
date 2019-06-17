@@ -15,11 +15,10 @@ def readSubnet():
         input_str = input("Enter Subnet (XXX:XXX:XXX:XXX/ZZ): ")
 
         try:
-
             subnet = ipaddress.ip_network(input_str, strict=False)
             return [subnet]
 
-        except:
+        except IOError:
             print("Invalid Subnet!")
 
 
@@ -33,7 +32,7 @@ def getIP():
         ip = socket.gethostbyname(socket.gethostname())
         return ip
 
-    except:
+    except IOError:
         print("Unable to get Machine IP. Are you connected to the internet?")
 
 

@@ -65,7 +65,7 @@ class Report:
         report_num = 0
         for subnet in self.subnets:
             # Generates subnet table
-            subnet_table = self.generateSubnetTable(subnet, report_num)
+            subnet_table = self.generateSubnetTable(subnet, self.scan_data[report_num])
             report_num += 1
             self.report.find(id='subnet_reports').append(subnet_table)
 
@@ -92,25 +92,19 @@ class Report:
             li_new_tag.string = port
             table.find(class_='open_ports').append(li_new_tag)
 
-        count = 0
         for os in os_detected:
-            if count == 3:
-                break
             li_new_tag = table.new_tag('li')
             li_new_tag.string = os
             table.find(class_='os_detection').append(li_new_tag)
-            count += 1
 
         return table
 
-    def generateSubnetTable(self, subnet, report_num):
-
-        #  TODO find better way to index scan data
+    def generateSubnetTable(self, subnet, scan_results):
 
         """
-        Generates Tables for each subent
+        Generates Tables for each subnet
         :param subnet:
-        :param report_num: used to index scan data
+        :param scan_results: Results from Nmap scan as dic
         :return:
         """
 
@@ -123,7 +117,7 @@ class Report:
 
         #  For all found hosts generate a table for them and insert them into "ScreenShots"
         try:
-            hosts = self.scan_data[report_num]['nmaprun']["host"]
+            hosts = scan_results['nmaprun']["host"]
 
             if isinstance(hosts, dict):
                 table = self.generateScreenShotTable(hosts)
@@ -161,8 +155,12 @@ class Report:
         try:
             os_match = host["os"]['osmatch']
             os_info = []
+            count = 0
             for os in os_match:
+                if count == 3:
+                    return os_info
                 os_info.append(os['@name'] + ':' + os['@accuracy'] + '%')
+                count += 1
 
             return os_info
 
