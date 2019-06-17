@@ -160,7 +160,7 @@ class Report:
             for os in os_match:
                 if count == 3:
                     return os_info
-                os_info.append(os['@name'] + ':' + os['@accuracy'] + '%')
+                os_info.append(str(os['@name']) + ':' + str(os['@accuracy']) + '%')
                 count += 1
 
             return os_info
