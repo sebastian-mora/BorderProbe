@@ -18,7 +18,7 @@ def readSubnet():
             subnet = ipaddress.ip_network(input_str, strict=False)
             return [subnet]
 
-        except IOError:
+        except ValueError:
             print("Invalid Subnet!")
 
 
@@ -32,7 +32,7 @@ def getIP():
         ip = socket.gethostbyname(socket.gethostname())
         return ip
 
-    except IOError:
+    except OSError:
         print("Unable to get Machine IP. Are you connected to the internet?")
 
 

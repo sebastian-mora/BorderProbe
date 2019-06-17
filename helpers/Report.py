@@ -90,7 +90,6 @@ class Report:
 
         #  For all found hosts generate a table for them and insert them into "ScreenShots"
 
-
         try:
             hosts = scan_results['nmaprun']["host"]
 
@@ -150,7 +149,7 @@ class Report:
 
             return port_info
 
-        except:
+        except KeyError:
             return ["No open Ports Found"]
 
     def getTopOS(self, host):
@@ -166,5 +165,5 @@ class Report:
 
             return os_info
 
-        except:
+        except KeyError:
             return ["No OS detected"]
