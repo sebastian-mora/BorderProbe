@@ -40,3 +40,9 @@
 127.0.0.1/24
 127.0.0.6/19
 ```
+
+ #### Dependencies 
+---
+  * Beautifulsoup4
+  * Xmltodict
+  * Nmap (installed on system)
