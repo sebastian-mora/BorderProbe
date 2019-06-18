@@ -60,7 +60,7 @@ class Report:
         """
 
         #  Adds subnets to CIDR ranges
-        self.report.find(id='cidr_ranges').string = ' '.join([subnet.compressed for subnet in self.subnets])
+        self.report.find(id='cidr_ranges').string = ' '.join([subnet for subnet in self.subnets])
 
         report_num = 0
         for subnet in self.subnets:
@@ -84,7 +84,7 @@ class Report:
         subnet_table = copy.copy(self.subnet_table)
 
         for ip in subnet_table.findAll('span', class_='target'):
-            ip.string = subnet.compressed
+            ip.string = subnet
 
         #  subnet_table.find(class_='attacker').string = self.attacker_ip
 
@@ -160,7 +160,9 @@ class Report:
             for os in os_match:
                 if count == 3:
                     return os_info
-                os_info.append(str(os['@name']) + ':' + str(os['@accuracy']) + '%')
+                os_name = str(os['@name'])
+                os_accry = str(os['@accuracy'])
+                os_info.append(os_name + " : " + os_accry)
                 count += 1
 
             return os_info

@@ -1,4 +1,3 @@
-import datetime
 import os
 import random
 import subprocess
@@ -52,19 +51,19 @@ class Scanner:
         return list(ipv4_subnet.subnets(prefixlen_diff=prefix_len, new_prefix=None))
 
     def getDecoys(self):
-        decoys = input("Enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
+        decoys = input("Please enter Decoys <Decoy 1>, <Decoy 2>, ... , <You> ")
         decoy_list = ["-D"]
         decoy_list.extend(decoys.split(","))
         return decoy_list
 
     def getTiming(self):
         menus.timingOptions()
-        num = input("Enter a Number: ")
+        num = input("Pleas enter a Number: ")
         timing = ['-T', str(num)]
         return timing
 
     def getSpoofIP(self):
-        ip = input("Enter Spoofed IP: ")
+        ip = input("Please Enter Spoof IP: ")
         flags = ['-S', ip]
         return flags
 
@@ -201,9 +200,9 @@ class Scanner:
 
                 if result:
                     found_hosts.extend(result)
+                    hosts[subnet.compressed] = found_hosts
+                    self.saveLiveHosts(found_hosts, random_subnet.compressed)
 
-            self.saveLiveHosts(found_hosts, random_subnet.compressed)
-            hosts[subnet.compressed] = found_hosts
             found_hosts = []
 
         return hosts
@@ -219,11 +218,11 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '-iL', '-']
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+               # '-iL', '-']
 
         #  Testing flag. Does not require root
-        #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         saved_files = []
 
@@ -262,11 +261,9 @@ class Scanner:
         else:
             flags.insert(2, '-')
 
-
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate(input=host_ips.encode())
-        menus.processAnimation(p)
 
         print("\nScanning subnet %s" % subnet)
         print("using flags: %s\n" % flags)

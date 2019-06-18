@@ -63,13 +63,13 @@ if __name__ == '__main__':
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
-        host_dic = scan.hostScan(subnet, choice)
-        xml_data = scan.phaseTwoScan(host_dic)
-        Report.Report(xml_data, subnet, ip)
+        live_hosts_dic = scan.hostScan(subnet, choice)
+        xml_data = scan.phaseTwoScan(live_hosts_dic)
+        Report.Report(xml_data, list(live_hosts_dic.keys()), ip)
 
     elif choice == 2:
 
-        filepath = input("Enter Path to subnet list: ")
+        filepath = input("Please Enter Path to subnet list: ")
 
         try:
             with open(filepath)as fd:
@@ -85,10 +85,10 @@ if __name__ == '__main__':
         menu.hostDiscoveryMethods()
         choice = menu.readInt()
 
-        live_hosts_file = scan.hostScan(subnets, choice)
+        live_hosts_dic = scan.hostScan(subnets, choice)
 
-        xml_data = scan.phaseTwoScan(live_hosts_file)
-        Report.Report(xml_data, subnets, ip)
+        xml_data = scan.phaseTwoScan(live_hosts_dic)
+        Report.Report(xml_data, list(live_hosts_dic.keys()), ip)
 
     else:
         pass

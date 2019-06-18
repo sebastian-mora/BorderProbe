@@ -1,6 +1,3 @@
-import sys
-import time
-
 
 def headerAsciiArt():
     print("""
@@ -32,7 +29,7 @@ def startMenu():
 
 def hostDiscoveryMethods():
     print("""
-        Chose a Host Disovery method:
+        Please Chose a Host Disovery method:
         
         1. ICMP Only Scan 
         2. IP Protocol Ping
@@ -43,7 +40,7 @@ def hostDiscoveryMethods():
 
 def hostDiscovEvasionTech():
     print("""
-        Chose one or more methods (1,2,3,...)
+        Please chose one or more methods (1,2,3,...)
         
         1. No evasion
         2. Fragmentation (Root Required)
@@ -70,18 +67,8 @@ def timingOptions():
     """)
 
 
-def processAnimation(process):
-    i = 0
-    animation_string = "|/-\\"
-    while process.poll() is None:
-        time.sleep(0.1)
-        sys.stdout.write("\r" + animation_string[i % len(animation_string)])
-        sys.stdout.flush()
-        i += 1
-
-
 def readInt():
     try:
-        return int(input("Enter a Number: "))
+        return int(input("Please Enter a Number: "))
     except ValueError:
         print("Input not an Integer")
