@@ -261,12 +261,14 @@ class Scanner:
         else:
             flags.insert(2, '-')
 
+        print("\nScanning subnet %s" % subnet)
+        print("using flags: %s\n" % flags)
+
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate(input=host_ips.encode())
 
-        print("\nScanning subnet %s" % subnet)
-        print("using flags: %s\n" % flags)
+
 
         # If nmap throws error print error and exit
         if "QUITTING" in str(stderr):
