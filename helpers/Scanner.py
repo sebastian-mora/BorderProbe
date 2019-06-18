@@ -180,7 +180,7 @@ class Scanner:
         found_hosts = []
 
         if scan_selector == 3:
-            flags.extend(self.evasionTechniques)
+            flags.extend(self.evasionTechniques())
 
         for subnet in subnets:
             subnet_div = self.divideSubnet(subnet)  # Divide subnet into more manageable chunks
