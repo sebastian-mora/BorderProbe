@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 class Report:
 
-    def __init__(self, xml_file_names, subnets, attacker_ip):
+    def __init__(self, xml_file_names, subnets, range, attacker_ip):
 
         """
         Compiles all saved XML file into a HTML report
@@ -22,6 +22,7 @@ class Report:
         self.report = self.getBS('helpers/templates/Final_Report.html')
         self.save_path = xml_file_names[0].split('/')[xml_file_names[0].index("output") + 1]
         self.subnets = subnets
+        self.range = range
         self.generateReport(self.save_path)
 
     def getBS(self, filename):
@@ -60,7 +61,7 @@ class Report:
         """
 
         #  Adds subnets to CIDR ranges
-        self.report.find(id='cidr_ranges').string = ' '.join([subnet for subnet in self.subnets])
+        self.report.find(id='cidr_ranges').string = ' '.join([subnet.compressed for subnet in self.range])
 
         report_num = 0
         for subnet in self.subnets:
