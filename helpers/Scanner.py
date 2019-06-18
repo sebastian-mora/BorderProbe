@@ -78,12 +78,6 @@ class Scanner:
         :param foldername: to where the csv will be saved
         :return:
         """
-        #  If the folder does not exist make it
-        if os.path.isdir('output') is not True:
-            os.mkdir('output')
-
-        if os.path.isdir('output/%s' % self.folder) is not True:
-            os.mkdir('output/%s' % self.folder)
 
         filename = 'output/%s/LiveHosts.csv' % self.folder
         f = open(filename, 'a+')
@@ -218,11 +212,11 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '-iL', '-']
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+                #'-iL', '-']
 
         #  Testing flag. Does not require root
-        #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         saved_files = []
 

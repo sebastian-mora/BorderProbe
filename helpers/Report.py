@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 class Report:
 
-    def __init__(self, xml_file_names, subnets, range, attacker_ip):
+    def __init__(self, xml_file_names, folder, subnets, range, attacker_ip):
 
         """
         Compiles all saved XML file into a HTML report
@@ -20,7 +20,7 @@ class Report:
         self.host_table_template = self.getBS('helpers/templates/host_table.html')
         self.subnet_table = self.getBS('helpers/templates/subnet_table.html')
         self.report = self.getBS('helpers/templates/Final_Report.html')
-        self.save_path = xml_file_names[0].split('/')[xml_file_names[0].index("output") + 1]
+        self.save_path = folder
         self.subnets = subnets
         self.range = range
         self.generateReport(self.save_path)

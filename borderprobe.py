@@ -42,6 +42,10 @@ def getProjectName():
         if os.path.isdir('output/' + dir_name) is True:
             print("There is a project already with that name: %s" % dir_name)
         else:
+            if os.path.isdir('output') is not True:
+                os.mkdir('output')
+
+            os.mkdir('output/'+ dir_name)
             return dir_name
 
 
@@ -88,7 +92,7 @@ if __name__ == '__main__':
         live_hosts_dic = scan.hostScan(subnets, choice)
 
         xml_data = scan.phaseTwoScan(live_hosts_dic)
-        Report.Report(xml_data, list(live_hosts_dic.keys()), subnets, ip)
+        Report.Report(xml_data, dir_name, list(live_hosts_dic.keys()), subnets, ip)
 
     else:
         pass
