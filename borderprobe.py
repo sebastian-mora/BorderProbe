@@ -97,7 +97,7 @@ if __name__ == '__main__':
         live_hosts_dic = scan.hostScan(subnets, choice)
 
         xml_data = scan.phaseTwoScan(live_hosts_dic)
-        Report.Report(xml_data, dir_name, list(live_hosts_dic.keys()), subnets, ip)
+        Report.Report(xml_data, dir_name, live_hosts_dic)
 
     else:
         pass

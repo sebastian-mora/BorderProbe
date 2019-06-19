@@ -80,6 +80,11 @@ class Report:
 
         subnet_table = copy.copy(self.subnet_table)
 
+        if not self.scan_data :
+            subnet_table.find(class_="recommendation").string = "N/A"
+            subnet_table.find(class_="risk").string = "N/A"
+
+
         ip_list = subnet_table.find(class_='found_ip')
 
         # Populates the Found Hosts
@@ -107,6 +112,7 @@ class Report:
 
             except KeyError:
                 pass
+
         return subnet_table
 
     def generateScreenShotTable(self, host):
