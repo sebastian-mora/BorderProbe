@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 class Report:
 
-    def __init__(self, xml_file_names, folder, foundhosts_dic):
+    def __init__(self, xml_file_names, folder, foundhosts_dic, cidr_ranges):
 
         """
         Compiles all saved XML file into a HTML report
@@ -22,7 +22,9 @@ class Report:
         self.report = self.getBS('helpers/templates/Final_Report.html')
         self.save_path = folder
         self.foundhosts_dic = foundhosts_dic
+        self.cidr_ranges = cidr_ranges
         self.generateReport(self.save_path)
+
 
     def getBS(self, filename):
         """
@@ -60,7 +62,7 @@ class Report:
         """
 
         #  Adds subnets to CIDR ranges
-        self.report.find(id='cidr_ranges').string = ' '.join([subnet for subnet in self.foundhosts_dic])
+        self.report.find(id='cidr_ranges').string = ' '.join([subnet.compressed for subnet in self.cidr_ranges])
 
         subnet_table = self.generateSubnetTable()
 
@@ -81,9 +83,12 @@ class Report:
         subnet_table = copy.copy(self.subnet_table)
 
         if not self.scan_data :
+            subnet_table.find(class_="description").string = "The network segment defined within the Scope of Work as a " \
+                                                             "target IPv4 range for segmentation can not be reached from" \
+                                                             " a network device hosted within a non-CDE network."
+
             subnet_table.find(class_="recommendation").string = "N/A"
             subnet_table.find(class_="risk").string = "N/A"
-
 
         ip_list = subnet_table.find(class_='found_ip')
 
@@ -93,7 +98,6 @@ class Report:
                 newtag = subnet_table.new_tag('li')
                 newtag.string = host
                 ip_list.append(newtag)
-
 
         #  For all found hosts generate a table for them and insert them into "ScreenShots"
         for scan_results in self.scan_data:
