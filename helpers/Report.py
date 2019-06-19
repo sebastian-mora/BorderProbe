@@ -60,7 +60,7 @@ class Report:
         """
 
         #  Adds subnets to CIDR ranges
-        self.report.find(id='cidr_ranges').string = ' '.join([subnet.compressed for subnet in self.range])
+        self.report.find(id='cidr_ranges').string = ' '.join([subnet for subnet in self.foundhosts_dic])
 
         subnet_table = self.generateSubnetTable()
 
@@ -80,14 +80,14 @@ class Report:
 
         subnet_table = copy.copy(self.subnet_table)
 
-        ip_list = subnet_table.find(class_='found_ips').append()
+        ip_list = subnet_table.find(class_='found_ip')
 
         # Populates the Found Hosts
         for range in self.foundhosts_dic:
-            for host in range:
-                newtag = BeautifulSoup.new_tag('li')
+            for host in self.foundhosts_dic[range]:
+                newtag = subnet_table.new_tag('li')
                 newtag.string = host
-                ip_list.appen(newtag)
+                ip_list.append(newtag)
 
 
         #  For all found hosts generate a table for them and insert them into "ScreenShots"
@@ -107,6 +107,7 @@ class Report:
 
             except KeyError:
                 pass
+        return subnet_table
 
     def generateScreenShotTable(self, host):
 

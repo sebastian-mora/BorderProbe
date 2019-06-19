@@ -68,8 +68,13 @@ if __name__ == '__main__':
         choice = menu.readInt()
 
         live_hosts_dic = scan.hostScan(subnet, choice)
+        #live_hosts_dic =  {'10.1.109.0/24': ['10.1.109.2', '10.1.109.5', '10.1.109.7', '10.1.109.8', '10.1.109.9', '10.1.109.16', '10.1.109.25', '10.1.109.27', '10.1.109.28', '10.1.109.31', '10.1.109.32']}
+
         xml_data = scan.phaseTwoScan(live_hosts_dic)
-        Report.Report(xml_data, dir_name, live_hosts_dic )
+
+        #xml_data = ['output/test3/Scan_Results(0).xml']
+        #dir_name = 'test3'
+        Report.Report(xml_data, dir_name, live_hosts_dic)
 
     elif choice == 2:
 
