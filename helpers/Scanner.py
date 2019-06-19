@@ -117,14 +117,14 @@ class Scanner:
             #  If only one host found result will be in dic not list
             if isinstance(hosts, dict):
                 ip = hosts['address']['@addr']
-
+                print("1 Host found")
                 return [ip]
 
             else:
                 live_hosts = []
                 for host in hosts:
                     live_hosts.append(host['address']['@addr'])
-
+                print("%d hosts found" % len(live_hosts))
                 return live_hosts
 
         except KeyError:
