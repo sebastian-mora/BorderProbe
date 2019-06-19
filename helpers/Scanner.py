@@ -181,15 +181,17 @@ class Scanner:
 
         if scan_selector == 3:
             flags.extend(self.evasionTechniques())
-        subnet_count = 0
+        subnet_count = 1
         for subnet in subnets:
             subnet_div = self.divideSubnet(subnet)  # Divide subnet into more manageable chunks
 
             #  Shuffles the order in which the subnets are scanned
             for random_subnet in self.randomizeSubnetOrder(subnet_div):
-                result = self.executeNmapCommand(flags, random_subnet.compressed ,random_subnet.compressed)
 
-                print("%d/%d Subnets Scanned " % (subnet_count, len(subnets)))
+                print("\nScanning subnet %s" % random_subnet)
+                result = self.executeNmapCommand(flags, random_subnet.compressed)
+
+                print("Scan Complete (%d/%d) " % (subnet_count, len(subnets) + 1))
 
                 #  extract live hosts from xml data
                 result = self.getLiveHosts(result)
@@ -229,13 +231,20 @@ class Scanner:
         for subnet in host_dic:
             ips = ' '.join(host_dic[subnet])
             filename = 'output/%s/Scan_Results(%d).xml' % (self.folder, count)
-            self.executeNmapCommand(flags, ips, subnet, filename)
+
+            print("\nScanning subnet %s" % subnet)
+            self.executeNmapCommand(flags, ips, filename)
+            print("Scan complete (%d/%d) \n" % (count, len(host_dic)))
+
             saved_files.append(filename)
             count += 1
 
+
+
+
         return saved_files
 
-    def executeNmapCommand(self, flags, host_ips, subnet="", file_name=None):
+    def executeNmapCommand(self, flags, host_ips, file_name=None):
 
         """
             Takes flags and ip list and pipe it into Nmap. The Nmap result is returned in XMl format
@@ -257,8 +266,7 @@ class Scanner:
         else:
             flags.insert(2, '-')
 
-        print("\nScanning subnet %s" % subnet)
-        print("using flags: %s\n" % flags)
+        print("using flags: %s" % flags)
 
         # Starts the Nmap Process
         p = subprocess.Popen(flags, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE)
