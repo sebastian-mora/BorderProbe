@@ -144,6 +144,10 @@ class Report:
     def getOpenPorts(self, host):
         try:
             ports = host["ports"]['port']
+
+            if isinstance(ports, dict):
+                return [ports['@portid'] + ':' + ports['service']['@name']]
+
             port_info = []
             for port in ports:
                 port_info.append(port['@portid'] + ':' + port['service']['@name'])
@@ -156,6 +160,12 @@ class Report:
     def getTopOS(self, host):
         try:
             os_match = host["os"]['osmatch']
+
+            if isinstance(os_match, dict):
+                os_name = str(os_match["@name"])
+                os_accry = str(os_match['@accuracy'])
+                return [os_name + " : " + os_accry]
+
             os_info = []
             count = 0
             for os in os_match:
