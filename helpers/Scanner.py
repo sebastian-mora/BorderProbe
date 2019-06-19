@@ -232,7 +232,7 @@ class Scanner:
 
             print("\nScanning subnet %s" % subnet)
             self.executeNmapCommand(flags, ips, filename)
-            print("Scan complete (%d/%d) \n" % (count, len(host_dic)))
+            print("Scan complete (%d/%d) \n" % (count+1, len(host_dic)))
 
             saved_files.append(filename)
             count += 1
