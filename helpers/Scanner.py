@@ -1,4 +1,3 @@
-import os
 import random
 import subprocess
 import xmltodict
@@ -199,7 +198,7 @@ class Scanner:
                 if result:
 
                     found_hosts = result
-                    hosts[subnet.compressed] = found_hosts
+                    hosts[random_subnet.compressed] = found_hosts
                     self.saveLiveHosts(found_hosts, random_subnet.compressed)
 
         return hosts
