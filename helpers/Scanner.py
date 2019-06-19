@@ -179,8 +179,9 @@ class Scanner:
 
         if scan_selector == 3:
             flags.extend(self.evasionTechniques())
-        subnet_count = 1
+
         for subnet in subnets:
+            subnet_count = 1
             subnet_div = self.divideSubnet(subnet)  # Divide subnet into more manageable chunks
 
             #  Shuffles the order in which the subnets are scanned
@@ -214,11 +215,11 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '-iL', '-']
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+               # '-iL', '-']
 
         #  Testing flag. Does not require root
-        #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         saved_files = []
 
