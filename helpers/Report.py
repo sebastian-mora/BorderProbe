@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 class Report:
 
-    def __init__(self, xml_file_names, folder, subnets, range, attacker_ip):
+    def __init__(self, xml_file_names, folder, foundhosts_dic):
 
         """
         Compiles all saved XML file into a HTML report
@@ -15,14 +15,13 @@ class Report:
         :param subnets: A list of subnets that were scanned
         :param attacker_ip: The ip of where the scan originated
         """
-        self.attacker_ip = attacker_ip
+
         self.scan_data = self.openXMLFiles(xml_file_names)
         self.host_table_template = self.getBS('helpers/templates/host_table.html')
         self.subnet_table = self.getBS('helpers/templates/subnet_table.html')
         self.report = self.getBS('helpers/templates/Final_Report.html')
         self.save_path = folder
-        self.subnets = subnets
-        self.range = range
+        self.foundhosts_dic = foundhosts_dic
         self.generateReport(self.save_path)
 
     def getBS(self, filename):
@@ -63,17 +62,14 @@ class Report:
         #  Adds subnets to CIDR ranges
         self.report.find(id='cidr_ranges').string = ' '.join([subnet.compressed for subnet in self.range])
 
-        report_num = 0
-        for subnet in self.subnets:
-            # Generates subnet table
-            subnet_table = self.generateSubnetTable(subnet, self.scan_data[report_num])
-            report_num += 1
-            if subnet_table:
-                self.report.find(id='subnet_reports').append(subnet_table)
+        subnet_table = self.generateSubnetTable()
+
+        if subnet_table:
+            self.report.find(id='subnet_reports').append(subnet_table)
 
         self.saveReport(file_path)
 
-    def generateSubnetTable(self, subnet, scan_results):
+    def generateSubnetTable(self):
 
         """
         Generates Tables for each subnet
@@ -84,29 +80,33 @@ class Report:
 
         subnet_table = copy.copy(self.subnet_table)
 
-        for ip in subnet_table.findAll('span', class_='target'):
-            ip.string = subnet
+        ip_list = subnet_table.find(class_='found_ips').append()
 
-        #  subnet_table.find(class_='attacker').string = self.attacker_ip
+        # Populates the Found Hosts
+        for range in self.foundhosts_dic:
+            for host in range:
+                newtag = BeautifulSoup.new_tag('li')
+                newtag.string = host
+                ip_list.appen(newtag)
+
 
         #  For all found hosts generate a table for them and insert them into "ScreenShots"
+        for scan_results in self.scan_data:
 
-        try:
-            hosts = scan_results['nmaprun']["host"]
+            try:
+                hosts = scan_results['nmaprun']["host"]
 
-            if isinstance(hosts, dict):
-                table = self.generateScreenShotTable(hosts)
-                subnet_table.find(class_="hosts").append(table)
-            else:
-                for host in hosts:
-                    if host["status"]["@state"] == "up":
-                        table = self.generateScreenShotTable(host)
-                        subnet_table.find(class_="hosts").append(table)
+                if isinstance(hosts, dict):
+                    table = self.generateScreenShotTable(hosts)
+                    subnet_table.find(class_="hosts").append(table)
+                else:
+                    for host in hosts:
+                        if host["status"]["@state"] == "up":
+                            table = self.generateScreenShotTable(host)
+                            subnet_table.find(class_="hosts").append(table)
 
-            return subnet_table
-
-        except KeyError:
-            return None
+            except KeyError:
+                pass
 
     def generateScreenShotTable(self, host):
 
