@@ -181,13 +181,15 @@ class Scanner:
 
         if scan_selector == 3:
             flags.extend(self.evasionTechniques())
-
+        subnet_count = 0
         for subnet in subnets:
             subnet_div = self.divideSubnet(subnet)  # Divide subnet into more manageable chunks
 
             #  Shuffles the order in which the subnets are scanned
             for random_subnet in self.randomizeSubnetOrder(subnet_div):
                 result = self.executeNmapCommand(flags, random_subnet.compressed ,random_subnet.compressed)
+
+                print("%d/%d Subnets Scanned " % (subnet_count, len(subnets)))
 
                 #  extract live hosts from xml data
                 result = self.getLiveHosts(result)
