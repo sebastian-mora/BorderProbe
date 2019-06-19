@@ -177,7 +177,6 @@ class Scanner:
         flags = scan_type[scan_selector]
 
         hosts = {}
-        found_hosts = []
 
         if scan_selector == 3:
             flags.extend(self.evasionTechniques())
@@ -198,11 +197,10 @@ class Scanner:
                 result = self.getLiveHosts(result)
 
                 if result:
-                    found_hosts.extend(result)
+
+                    found_hosts = result
                     hosts[subnet.compressed] = found_hosts
                     self.saveLiveHosts(found_hosts, random_subnet.compressed)
-
-            found_hosts = []
 
         return hosts
 
@@ -217,11 +215,11 @@ class Scanner:
         :param host_dic: {subnet: [found_host ip]}
         :return: [xml_file_name, ... ]
         """
-        flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '-iL', '-']
+        #flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
+               # '-iL', '-']
 
         #  Testing flag. Does not require root
-        #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
+        flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
 
         saved_files = []
 
