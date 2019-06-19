@@ -192,6 +192,7 @@ class Scanner:
                 result = self.executeNmapCommand(flags, random_subnet.compressed)
 
                 print("Scan Complete (%d/%d) " % (subnet_count, len(subnet_div)))
+                subnet_count += 1
 
                 #  extract live hosts from xml data
                 result = self.getLiveHosts(result)
