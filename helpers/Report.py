@@ -62,7 +62,7 @@ class Report:
         """
 
         #  Adds subnets to CIDR ranges
-        self.report.find(id='cidr_ranges').string = ' '.join([subnet.compressed for subnet in self.cidr_ranges])
+        self.report.find(id='cidr_ranges').string = ', '.join([subnet.compressed for subnet in self.cidr_ranges])
 
         subnet_table = self.generateSubnetTable()
 
