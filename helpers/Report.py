@@ -140,6 +140,7 @@ class Report:
             li_new_tag.string = port
             table.find(class_='open_ports').append(li_new_tag)
 
+
         for os in os_detected:
             li_new_tag = table.new_tag('li')
             li_new_tag.string = os
@@ -157,11 +158,19 @@ class Report:
             ports = host["ports"]['port']
 
             if isinstance(ports, dict):
-                return [ports['@portid'] + ':' + ports['service']['@name']]
+                try:
+                    verison_id = str(ports['service']['@version'])
+                    return [ports['@portid'] + ': ' + ports['service']['@name'] + ", version: " + verison_id]
+                except KeyError:
+                    return [ports['@portid'] + ': ' + ports['service']['@name']]
 
             port_info = []
             for port in ports:
-                port_info.append(port['@portid'] + ':' + port['service']['@name'])
+                try:
+                    verison_id = str(port['service']['@version'])
+                    port_info.append(port['@portid'] + ': ' + port['service']['@name'] + ", version: " + verison_id)
+                except KeyError:
+                    port_info.append(port['@portid'] + ': ' + port['service']['@name'])
 
             return port_info
 
@@ -175,7 +184,7 @@ class Report:
             if isinstance(os_match, dict):
                 os_name = str(os_match["@name"])
                 os_accry = str(os_match['@accuracy'])
-                return [os_name + " : " + os_accry]
+                return [os_name + " : " + os_accry + '%']
 
             os_info = []
             count = 0
@@ -184,7 +193,7 @@ class Report:
                     return os_info
                 os_name = str(os['@name'])
                 os_accry = str(os['@accuracy'])
-                os_info.append(os_name + " : " + os_accry)
+                os_info.append(os_name + ": " + os_accry + '%')
                 count += 1
 
             return os_info
