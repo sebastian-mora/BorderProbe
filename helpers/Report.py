@@ -141,10 +141,10 @@ class Report:
             table.find(class_='open_ports').append(li_new_tag)
 
 
-        for os in os_detected:
-            li_new_tag = table.new_tag('li')
-            li_new_tag.string = os
-            table.find(class_='os_detection').append(li_new_tag)
+        # for os in os_detected:
+        #     li_new_tag = table.new_tag('li')
+        #     li_new_tag.string = os
+        #     table.find(class_='os_detection').append(li_new_tag)
 
         return table
 
