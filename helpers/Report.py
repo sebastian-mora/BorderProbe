@@ -131,7 +131,7 @@ class Report:
 
         target_ip = host["address"]["@addr"]
         open_ports = self.getOpenPorts(host)
-        os_detected = self.getTopOS(host)
+        #os_detected = self.getTopOS(host)
 
         table.find(class_='host_ip').string = target_ip
 
@@ -167,8 +167,8 @@ class Report:
             port_info = []
             for port in ports:
                 try:
-                    verison_id = str(port['service']['@version'])
-                    port_info.append(port['@portid'] + ': ' + port['service']['@name'] + ", version: " + verison_id)
+                    version_id = str(port['service']['@version'])
+                    port_info.append(port['@portid'] + ': ' + port['service']['@name'] + ", version: " + version_id)
                 except KeyError:
                     port_info.append(port['@portid'] + ': ' + port['service']['@name'])
 
@@ -198,5 +198,5 @@ class Report:
 
             return os_info
 
-        except KeyError:
+        except:
             return ["No OS detected"]
