@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import ipaddress
 import socket
 import os
