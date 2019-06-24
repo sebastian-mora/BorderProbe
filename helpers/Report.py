@@ -130,7 +130,7 @@ class Report:
 
         target_ip = host["address"]["@addr"]
         open_ports = self.getOpenPorts(host)
-        #os_detected = self.getTopOS(host)
+        os_detected = self.getTopOS(host)
 
         table.find(class_='host_ip').string = target_ip
 
@@ -140,10 +140,10 @@ class Report:
             table.find(class_='open_ports').append(li_new_tag)
 
 
-        # for os in os_detected:
-        #     li_new_tag = table.new_tag('li')
-        #     li_new_tag.string = os
-        #     table.find(class_='os_detection').append(li_new_tag)
+        for os in os_detected:
+            li_new_tag = table.new_tag('li')
+            li_new_tag.string = os
+            table.find(class_='os_detection').append(li_new_tag)
 
         return table
 
