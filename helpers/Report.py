@@ -1,5 +1,4 @@
 import copy
-
 import xmltodict
 from bs4 import BeautifulSoup
 
