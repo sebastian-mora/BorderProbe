@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 
 import ipaddress
 import socket
@@ -38,17 +38,28 @@ def getIP():
     except OSError:
         print("Unable to get Machine IP. Are you connected to the internet?")
 
-def getProjectName():
-    while True:
-        dir_name = str(input("Enter a project name: "))
-        if os.path.isdir('output/' + dir_name) is True:
-            print("There is a project already with that name: %s" % dir_name)
-        else:
-            if os.path.isdir('output') is not True:
-                os.mkdir('output')
+def checkProject(project_name):
 
-            os.mkdir('output/'+ dir_name)
-            return dir_name
+    full_path = '{}/output/{}'.format(os.getcwd(), project_name)
+    root_path_bool = os.path.isdir('{}/output'.format(os.getcwd()))
+    project_path_bool = os.path.isdir(full_path)
+
+    return root_path_bool,project_path_bool
+
+def getProjectName():
+
+
+    p_name = str(raw_input("[*] Enter a project name: "))
+    root_bool, project_bool = checkProject(p_name)
+
+    if not root_bool:
+        os.system('mkdir {}'.format('{}/output'.format(os.getcwd())))
+
+    if not project_bool:
+        proj_path = '{}/output/{}'.format(os.getcwd(), p_name)
+        os.system('mkdir {}'.format(proj_path))
+
+    return p_name
 
 
 if __name__ == '__main__':
@@ -82,6 +93,7 @@ if __name__ == '__main__':
         try:
             with open(filepath)as fd:
                 subnets = [line.rstrip('\n') for line in fd]
+
             fd.close()
 
         except FileNotFoundError:
@@ -96,6 +108,7 @@ if __name__ == '__main__':
         live_hosts_dic = scan.hostScan(subnets, choice)
 
         xml_data = scan.phaseTwoScan(live_hosts_dic)
+
         Report.Report(xml_data, dir_name, live_hosts_dic, subnets)
 
     else:
