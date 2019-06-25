@@ -38,7 +38,9 @@ def getIP():
     except OSError:
         print("Unable to get Machine IP. Are you connected to the internet?")
 
+
 def getProjectName():
+
     while True:
         dir_name = str(input("Enter a project name: "))
         if os.path.isdir('output/' + dir_name) is True:
@@ -47,7 +49,7 @@ def getProjectName():
             if os.path.isdir('output') is not True:
                 os.mkdir('output')
 
-            os.mkdir('output/'+ dir_name)
+            os.mkdir('output/' + dir_name)
             return dir_name
 
 
