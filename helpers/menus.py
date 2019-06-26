@@ -24,6 +24,9 @@ def startMenu():
         1. Scan Subnet
 
         2. Scan Subnets from File
+        
+        3. Generate Report from Nmap XML
+        
     """)
 
 

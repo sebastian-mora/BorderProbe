@@ -30,7 +30,7 @@ def checkProject(project_name):
     root_path_bool = os.path.isdir('{}/output'.format(os.getcwd()))
     project_path_bool = os.path.isdir(full_path)
 
-    return root_path_bool,project_path_bool
+    return root_path_bool, project_path_bool
 
 def getProjectName():
 
@@ -95,10 +95,16 @@ if __name__ == '__main__':
         Report.Report(xml_data, dir_name, live_hosts_dic, subnets)
 
     elif choice == 3:
-        # TODO allow user to Nmap XML for to gen report
-        pass
 
+        #  This code is lk painful need to go back and fix Report.py
+        xml_path = str(input("Enter in path to XML: "))
 
+        with open(xml_path) as fd:
+            xml_data = fd.read()
+
+        live_hosts = scan.getLiveHosts(xml_data)
+
+        Report.Report([xml_path], dir_name, {" ": live_hosts}, [])
 
     else:
         pass
