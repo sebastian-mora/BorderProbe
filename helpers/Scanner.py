@@ -1,3 +1,6 @@
+
+#!/usr/bin/python
+
 import random
 import subprocess
 import xmltodict

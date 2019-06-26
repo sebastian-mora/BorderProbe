@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import ipaddress
-import socket
 import os
 
 from helpers import menus as menu, Report
@@ -25,19 +24,6 @@ def readSubnet():
             print("Invalid Subnet!")
 
 
-def getIP():
-    """
-    Gets the users IP for the report
-    :return: str ip
-    """
-
-    try:
-        ip = socket.gethostbyname(socket.gethostname())
-        return ip
-
-    except OSError:
-        print("Unable to get Machine IP. Are you connected to the internet?")
-
 def checkProject(project_name):
 
     full_path = '{}/output/{}'.format(os.getcwd(), project_name)
@@ -48,8 +34,7 @@ def checkProject(project_name):
 
 def getProjectName():
 
-
-    p_name = str(raw_input("[*] Enter a project name: "))
+    p_name = str(input("[*] Enter a project name: "))
     root_bool, project_bool = checkProject(p_name)
 
     if not root_bool:
@@ -70,8 +55,6 @@ if __name__ == '__main__':
     dir_name = getProjectName()
 
     scan = Scanner(dir_name)
-
-    ip = getIP()
 
     if choice == 1:
 
@@ -110,6 +93,12 @@ if __name__ == '__main__':
         xml_data = scan.phaseTwoScan(live_hosts_dic)
 
         Report.Report(xml_data, dir_name, live_hosts_dic, subnets)
+
+    elif choice == 3:
+        # TODO allow user to Nmap XML for to gen report
+        pass
+
+
 
     else:
         pass
