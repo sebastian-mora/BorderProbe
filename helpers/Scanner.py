@@ -199,11 +199,8 @@ class Scanner:
                 #  extract live hosts from xml data
                 result = self.getLiveHosts(result)
 
-                if result:
-
-                    found_hosts = result
-                    hosts[random_subnet.compressed] = found_hosts
-                    self.saveLiveHosts(found_hosts, random_subnet.compressed)
+                hosts[subnet.compressed] = result
+                self.saveLiveHosts(result, random_subnet.compressed)
 
         return hosts
 

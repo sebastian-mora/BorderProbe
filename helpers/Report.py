@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 class Report:
 
-    def __init__(self, xml_file_names, folder, foundhosts_dic, cidr_ranges):
+    def __init__(self, xml_file_names, folder, foundhosts_dic):
 
         """
         Compiles all saved XML file into a HTML report
@@ -21,7 +21,7 @@ class Report:
         self.report = self.getBS('helpers/templates/Final_Report.html')
         self.save_path = folder
         self.foundhosts_dic = foundhosts_dic
-        self.cidr_ranges = cidr_ranges
+        self.cidr_ranges = list(foundhosts_dic.keys())
         self.generateReport(self.save_path)
 
 
@@ -61,7 +61,7 @@ class Report:
         """
 
         #  Adds subnets to CIDR ranges
-        self.report.find(id='cidr_ranges').string = ', '.join([subnet.compressed for subnet in self.cidr_ranges])
+        self.report.find(id='cidr_ranges').string = ', '.join(self.foundhosts_dic.keys())
 
         subnet_table = self.generateSubnetTable()
 

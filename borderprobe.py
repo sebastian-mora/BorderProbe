@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
         xml_data = scan.phaseTwoScan(live_hosts_dic)
 
-        Report.Report(xml_data, dir_name, live_hosts_dic, subnet)
+        Report.Report(xml_data, dir_name, live_hosts_dic)
 
     elif choice == 2:
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
         xml_data = scan.phaseTwoScan(live_hosts_dic)
 
-        Report.Report(xml_data, dir_name, live_hosts_dic, subnets)
+        Report.Report(xml_data, dir_name, live_hosts_dic)
 
     elif choice == 3:
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
         live_hosts = scan.getLiveHosts(xml_data)
 
-        Report.Report([xml_path], dir_name, {" ": live_hosts}, [])
+        Report.Report([xml_path], dir_name, {" ": live_hosts})
 
     else:
         pass
