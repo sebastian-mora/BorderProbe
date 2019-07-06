@@ -128,7 +128,16 @@ class Report:
 
         table = copy.copy(self.host_table_template)
 
-        target_ip = host["address"]["@addr"]
+        addr = host['address']
+
+        #  If run as root the address are list with Mac in pos 2. Non-root is a dict only
+
+        if isinstance(addr, list):
+            target_ip = addr[0]['@addr']
+
+        else:
+            target_ip = addr['@addr']
+
         open_ports = self.getOpenPorts(host)
         os_detected = self.getTopOS(host)
 

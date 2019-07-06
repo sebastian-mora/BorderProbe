@@ -125,8 +125,17 @@ class Scanner:
             else:
                 live_hosts = []
                 for host in hosts:
-                    live_hosts.append(host['address']['@addr'])
+                    address = host['address']
+
+                    #  If run as root the address are list with Mac in pos 2. Non-root is a dict only
+                    if isinstance(address, list):
+                        live_hosts.append(address[0]['@addr'])
+
+                    else:
+                        live_hosts.append(address['@addr'])
+
                 print("%d hosts found\n" % len(live_hosts))
+
                 return live_hosts
 
         except KeyError:
@@ -216,7 +225,7 @@ class Scanner:
         :return: [xml_file_name, ... ]
         """
         flags = ['--randomize-hosts', '-n', '-Pn', '-O', '-sV', '--top-ports', '1000',
-                '-iL', '-']
+                 '-iL', '-']
 
         #  Testing flag. Does not require root
         #flags = ['--randomize-hosts', '-n', '-Pn', '--top-ports', '100', '--script-timeout', '20', '-iL', '-']
