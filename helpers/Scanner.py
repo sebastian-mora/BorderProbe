@@ -118,9 +118,18 @@ class Scanner:
 
             #  If only one host found result will be in dic not list
             if isinstance(hosts, dict):
-                ip = hosts['address']['@addr']
+                addr = hosts['address']
+
+                #  If run as root the address are list with Mac in pos 2. Non-root is a dict only
+
+                if isinstance(addr, list):
+                    target_ip = addr[0]['@addr']
+
+                else:
+                    target_ip = addr['@addr']
+
                 print("1 Host found\n")
-                return [ip]
+                return [target_ip]
 
             else:
                 live_hosts = []
@@ -214,6 +223,8 @@ class Scanner:
         return hosts
 
 
+    # Each subnet is stored to the disk then referneced later in the report
+    #TODO Make a parser to aggerate Nmap results into one object to pass to Report
     def phaseTwoScan(self, host_dic):
         """
         Using the dic of live host from the first scan
